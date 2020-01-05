@@ -87,31 +87,25 @@
                     <p>123</p>
                 </div>
             </div>
-            <!-- Sidebar Navidation Menus--><span class="heading">Main</span>
-            <ul id="menu" class="list-unstyled">
+            <div id="menuDiv">
+                <ul  class="list-unstyled">
 
-                <li><a href="main.action"  target="mainFrame"> <i class="icon-home"></i> 后台首页 </a></li>
-                <li nav-item class="active"><a href="score!updaloadPage.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩上传 </a></li>
-                <%--<li><a href="pub!index.action"  target="mainFrame"> <i class="icon-grid"></i> 数据维护 </a></li>--%>
-                <li><a href="score!scoreList.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩查询 </a></li>
-                <li><a href="score!analysisIndex.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩分析 </a></li>
-                <li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-interface-windows"></i> 数据维护 </a>
-                    <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
-                        <li><a href="pub!courseList.action" target="mainFrame">课程维护</a></li>
-                        <li><a href="pub!gradeList.action" target="mainFrame">年级维护</a></li>
-                        <li><a href="pub!adminclassList.action" target="mainFrame">班级维护</a></li>
-                        <li><a href="pub!studentList.action" target="mainFrame">学生维护</a></li>
-                        <li><a href="pub!examBatchList.action" target="mainFrame">考试批次维护</a></li>
-                        <li><a href="pub!examList.action" target="mainFrame">等级线维护</a></li>
-                    </ul>
-                </li>
-     <%--                       </ul><span class="heading">Extras</span>
-                            <ul class="list-unstyled">
-                                <li> <a href="#"> <i class="icon-flask"></i>Demo </a></li>
-                                <li> <a href="#"> <i class="icon-screen"></i>Demo </a></li>
-                                <li> <a href="#"> <i class="icon-mail"></i>Demo </a></li>
-                                <li> <a href="#"> <i class="icon-picture"></i>Demo </a></li>
-                            </ul>--%>
+                    <li ><a href="main.action"  target="mainFrame"> <i class="icon-home"></i> 后台首页 </a></li>
+                    <li><a href="score!updaloadPage.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩上传 </a></li>
+                    <%--<li><a href="pub!index.action"  target="mainFrame"> <i class="icon-grid"></i> 数据维护 </a></li>--%>
+                    <li><a href="score!scoreList.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩查询 </a></li>
+                    <li><a href="score!analysisIndex.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩分析 </a></li>
+                    <li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-interface-windows"></i> 数据维护 </a>
+                        <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
+                            <li><a href="pub!courseList.action" target="mainFrame">课程维护</a></li>
+                            <li><a href="pub!gradeList.action" target="mainFrame">年级维护</a></li>
+                            <li><a href="pub!adminclassList.action" target="mainFrame">班级维护</a></li>
+                            <li><a href="pub!studentList.action" target="mainFrame">学生维护</a></li>
+                            <li><a href="pub!examBatchList.action" target="mainFrame">考试批次维护</a></li>
+                            <li><a href="pub!examList.action" target="mainFrame">等级线维护</a></li>
+                        </ul>
+                    </li>
+            </div>
         </nav>
         <div class="content-inner" align="center">
             <iframe frameborder="0" src="main.action" name="mainFrame" width="100%" height="100%"></iframe>
@@ -124,10 +118,17 @@
 
     $(function () {
 
-        $("#menu").find("li").onclick(function () {
-            alert(111)
+        $("#menuDiv li").click(function () {
+
+            var $liArr = $(".active");
+
+            for (var i = 0; i < $liArr.length; i++) {
+                $($liArr[0]).removeClass("active");
+            }
+
+            $(this).addClass("active")
         })
 
     });
-    
+
 </script>

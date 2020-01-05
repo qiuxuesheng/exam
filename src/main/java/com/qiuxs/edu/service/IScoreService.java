@@ -22,7 +22,7 @@ public interface IScoreService extends IBaseService{
 
 	public List<ExamScore> findPageList(String examId);
 
-	public List<List<Object>> getDataList(ExamBatch exam, int type);
+	public List<List<Object>> getDataList(ExamBatch exam, String courseId);
 	
 	
 }

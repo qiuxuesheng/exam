@@ -150,23 +150,23 @@ public class PublicService extends BaseService implements IPublicService{
 	}
 
 
-	public void saveExamBatch(ExamBatch exam) {
+	public void saveExamBatch(ExamBatch examBatch) {
 		String hql = "from ExamBatch where name = ?";
 		List<Object> params = new ArrayList<Object>();
-		params.add(exam.getName());
-		if (Strings.isNotEmpty(exam.getId())){
+		params.add(examBatch.getName());
+		if (Strings.isNotEmpty(examBatch.getId())){
 			hql += " and id <> ?";
-			params.add(exam.getId());
+			params.add(examBatch.getId());
 		}
 		ExamBatch exist = examBatchDao.findOneByHql(hql,params);
 		if (exist!=null) {
 			throw new RuntimeException("添加失败，该考次名称已存在！");
 		}
-		if (Strings.isEmpty(exam.getId())) {//新建
-			exam.setId(MyUtil.getUUID());
-			examBatchDao.save(exam);
+		if (Strings.isEmpty(examBatch.getId())) {//新建
+			examBatch.setId(MyUtil.getUUID());
+			examBatchDao.save(examBatch);
 		}else{
-			examBatchDao.update(exam);
+			examBatchDao.update(examBatch);
 		}
 
 	}

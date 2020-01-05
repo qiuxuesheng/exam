@@ -107,33 +107,42 @@ public class ScoreAction extends BaseAction{
 
 	public String analysisIndex(){
 
-		examBatchs = publicService.findAll(ExamBatch.class);
+		List<ExamBatch> examBatchs = publicService.findAll(ExamBatch.class);
+		List<Course> courses = publicService.findAll(Course.class);
+		List<List<Object>> rows = new ArrayList<List<Object>>();
 
-		String[] arr = {"","语文","数学","英语","物理","化学","政治","历史"};
 
-		int type = getPairInt("subject");
-		String examId = getPairValue("examId");
-		if(examId!=null&&!"".equals(examId)){
+		String courseId = getString("pair.subject");
+		String examId = getString("pair.examId");
+		if(Strings.isNotEmpty(examId)){
 
-			ExamBatch exam = publicService.findById(ExamBatch.class,examId);
-			rows = scoreService.getDataList(exam,type);
-			putPairValue("examName", exam.getName());
-			putPairValue("subjectName", arr[type]);
+			ExamBatch examBatch = publicService.findById(ExamBatch.class,examId);
+			rows = scoreService.getDataList(examBatch,courseId);
+			putPairValue("examName", examBatch.getName());
+			putPairValue("subjectName", "");
 
 		}
+
+		put("examBatchs",examBatchs);
+		put("courses",courses);
+		put("rows",rows);
+
 		return "analysisIndex";
 	}
 
 
 	public void exportWord(){
-		String[] arr = {"","语文","数学","英语","物理","化学","政治","历史"};
-		String examId = getPairValue("examId");
-		int type = getPairInt("subject");
-		if(examId==null||"".equals(examId)){
+		String examId = getString("pair.examId");
+		String courseId = getString("pair.courseId");
+		if(Strings.isEmpty(examId)){
 			return ;
 		}
-		ExamBatch exam = publicService.findById(ExamBatch.class,examId);
-		rows = scoreService.getDataList(exam, type);
+		if(Strings.isEmpty(courseId)){
+			return ;
+		}
+		ExamBatch examBatch = publicService.findById(ExamBatch.class,examId);
+		Course course = publicService.findById(Course.class,courseId);
+		rows = scoreService.getDataList(examBatch, courseId);
 		String[] titleArr = {"班级","考试人数","100分人数","90-100","80-100","70-100","70以下","优秀率","良好率","及格率","平均分"};
 
 
@@ -143,7 +152,7 @@ public class ScoreAction extends BaseAction{
 
 		int rowIndex = 1;
 		//3.创建标题行
-		String titleValue = exam.getName()+arr[type]+"成绩分析";
+		String titleValue = examBatch.getName()+course.getName()+"成绩分析";
 		Map<Integer, String> params = new HashMap<Integer, String>();
 		params.put(1, titleValue);
 		createRow(sheet, rowIndex++, titleArr.length, params, getTitleStyle(hssfWorkbook));

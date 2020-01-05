@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.persistence.Id;
 
 import com.qiuxs.edu.dao.*;
 import com.qiuxs.edu.entity.*;
@@ -175,7 +174,7 @@ public class ScoreService extends BaseService implements IScoreService{
 		StringBuffer hql = new StringBuffer("from ExamScore where 1=1");
 		List<Object> params = new ArrayList<Object>();
 		if (examId!=null&&!"".equals(examId)) {
-			hql.append("and exam.id=?");
+			hql.append("and examBatch.id=?");
 			params.add(examId);
 		}
 		hql.append("order by testNumber");
@@ -183,21 +182,18 @@ public class ScoreService extends BaseService implements IScoreService{
 		return examScoreDao.findListByHql(hql.toString(), params.toArray());
 	}
 
-	public List<List<Object>> getDataList(ExamBatch exam, int type){
+	public List<List<Object>> getDataList(ExamBatch examBatch, String courseId){
 
 		List<List<Object>> rows = new ArrayList<List<Object>>();
 
-		if (exam!=null) {
+		if (examBatch !=null) {
 
-			List<ExamScore> scores = findPageList(exam.getId());
+			List<ExamScore> scores = findPageList(examBatch.getId());
 			Map<String, Double> map = new HashMap<String, Double>();
 			for (ExamScore score : scores) {
-
-
-				//TODO
-				double d = 0;
-
-				//过滤缺考的学生
+				//分项成绩
+				double d = score.getScoreItem(courseId);
+				//过滤缺考（999）的学生
 				if(d==999){
 					continue;
 				}

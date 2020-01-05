@@ -28,6 +28,7 @@
 						<tr>
 							<th >序号</th>
 							<th>准考号</th>
+							<th>年级</th>
 							<th>班级</th>
 							<th>姓名</th>
 							<s:iterator value="courses" var="course" status="st">
@@ -40,6 +41,7 @@
 							<tr>
 								<td>${st.index+1 }</td>
 								<td>${score.testNumber }</td>
+								<td>${score.student.adminclass.grade.name}</td>
 								<td>${score.student.adminclass.name}</td>
 								<td>${score.student.name}</td>
 								<s:iterator value="courses" var="course" status="st">

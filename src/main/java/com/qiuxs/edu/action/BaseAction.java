@@ -16,37 +16,23 @@ public class BaseAction extends ActionSupport{
 	private Map<String, String> pair ;
 
 
-    /**
-     * get parameter named attr
-     *
-     * @param attr a {@link java.lang.String} object.
-     * @return single value or multivalue joined with comma
-     * @param data a {@link java.util.Map} object.
-     */
-    public String getString(Map<String, Object> data, String attr) {
-        Object value = data.get(attr);
-        if (null == value) { return null; }
-        if (!value.getClass().isArray()) { return value.toString(); }
-        String[] values = (String[]) value;
-        if (values.length == 1) {
-            return values[0];
-        } else {
-            return Strings.join(values, ",");
-        }
-    }
-
-
 	private static final long serialVersionUID = -7771051448180391606L;
 
 	protected void put(String key,Object value){
 		ActionContext.getContext().getContextMap().put(key, value);
 	}
 
-	protected Object get(String attr){
+	protected String getString(String attr){
 
-        Object param = ActionContext.getContext().getParameters().get(attr);
-
-		return ActionContext.getContext().getValueStack().getContext().get(attr);
+        Object value = ActionContext.getContext().getParameters().get(attr);
+		if (null == value) { return null; }
+		if (!value.getClass().isArray()) { return value.toString(); }
+		String[] values = (String[]) value;
+		if (values.length == 1) {
+			return values[0];
+		} else {
+			return Strings.join(values, ",");
+		}
 	}
 
 	protected void write(String msg) throws Exception{
