@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN" "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<package name="eduPackage" extends="struts-default">
+		<action name="index">
+			<result>page/index.jsp</result>
+		</action>
+		<action name="main">
+			<result>page/main.jsp</result>
+		</action>
+
+		<action name="pub!*" class="publicAction" method="{1}">
+			<result name="courseList">page/data/courseList.jsp</result>
+			<result name="courseForm">page/data/courseForm.jsp</result>
+			<result name="gradeList">page/data/gradeList.jsp</result>
+			<result name="gradeForm">page/data/gradeForm.jsp</result>
+			<result name="adminclassList">page/data/adminclassList.jsp</result>
+			<result name="adminclassForm">page/data/adminclassForm.jsp</result>
+			<result name="adminclassUplaodForm">page/data/adminclassUplaodForm.jsp</result>
+			<result name="studentList">page/data/studentList.jsp</result>
+			<result name="studentForm">page/data/studentForm.jsp</result>
+			<result name="studentUplaodForm">page/data/studentUplaodForm.jsp</result>
+			<result name="examBatchList">page/data/examBatchList.jsp</result>
+			<result name="examBatchForm">page/data/examBatchForm.jsp</result>
+		</action>
+		
+		<action name="score!*" class="scoreAction" method="{1}">
+			<interceptor-ref name="defaultStack" />
+			<result name="updaloadPage">page/score/updaloadPage.jsp</result>
+			<result name="analysisIndex">page/score/analysisIndex.jsp</result>
+			<result name="scoreList">page/score/scoreList.jsp</result>
+		</action>
+
+		<!-- 文件操作 -->
+		<action name="fileUpload" class="fileAction" method="uploadFile">
+			<interceptor-ref name="defaultStack" />
+		</action>
+		<action name="fileDownload" class="fileAction" method="download">
+			<interceptor-ref name="defaultStack" />
+			<result name="success" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="contentDisposition">attachment;filename="${filename}"</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		</action>
+
+	</package>
+</struts>
