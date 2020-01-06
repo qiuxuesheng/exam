@@ -24,6 +24,9 @@ public class MyUtil {
 		// 设置精确到小数点后2位
 		sub = sub==null?0:sub; 
 		sum = sum==null?0:sum;
+		if (sum == 0 ){
+			return "0.00%";
+		}
 		numberFormat.setMaximumFractionDigits(2);
 		
 		if (b) {

@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import com.qiuxs.edu.dao.*;
 import com.qiuxs.edu.entity.*;
+import com.qiuxs.edu.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,16 +127,18 @@ public class ScoreService extends BaseService implements IScoreService{
 			String adminclassName = row.get(adminclassIndex);
 			String stuName = row.get(nameIndex);
 
-			//1.查询学生,不存在则新建学生
-			Student student = studentDao.findOneByHql("from Student where name = ? and adminclass.name =? ",new Object[]{stuName,adminclassName});
-			if (student==null) {
-				throw new RuntimeException("第"+(i+1)+"行出错，学生不存在:"+stuName);
-			}
-			//1.1看班级是否存在，不存在则新建
+			//看班级是否存在，不存在则新建
 			Adminclass adminclass = adminclassDao.findOneByHql("from Adminclass where name=?", new Object[]{adminclassName});
 			if (adminclass==null) {
 				throw new RuntimeException("第"+(i+1)+"行出错，班级不存在:"+adminclassName);
 			}
+
+			//查询学生,不存在则新建学生
+			Student student = studentDao.findOneByHql("from Student where name = ? and adminclass.name =? ",new Object[]{stuName,adminclassName});
+			if (student==null) {
+				throw new RuntimeException("第"+(i+1)+"行出错，学生不存在:"+stuName);
+			}
+
 
 			//成绩
 			ExamScore examScore = new ExamScore();
@@ -166,29 +169,33 @@ public class ScoreService extends BaseService implements IScoreService{
 	}
 
 	public List<ExamScore> findPageList() {
-		return findPageList(null);
+		return findPageList(null,null);
 	}
 
-	public List<ExamScore> findPageList(String examId) {
+	public List<ExamScore> findPageList(String examId,String gradeId) {
 
 		StringBuffer hql = new StringBuffer("from ExamScore where 1=1");
 		List<Object> params = new ArrayList<Object>();
-		if (examId!=null&&!"".equals(examId)) {
+		if (Strings.isNotEmpty(examId)) {
 			hql.append("and examBatch.id=?");
 			params.add(examId);
+		}
+		if (Strings.isNotEmpty(gradeId)) {
+			hql.append("and student.adminclass.grade.id=?");
+			params.add(gradeId);
 		}
 		hql.append("order by testNumber");
 
 		return examScoreDao.findListByHql(hql.toString(), params.toArray());
 	}
 
-	public List<List<Object>> getDataList(ExamBatch examBatch, String courseId){
+	public List<List<Object>> getDataList(ExamBatch examBatch, Grade grade, String courseId){
 
 		List<List<Object>> rows = new ArrayList<List<Object>>();
 
 		if (examBatch !=null) {
 
-			List<ExamScore> scores = findPageList(examBatch.getId());
+			List<ExamScore> scores = findPageList(examBatch.getId(),grade.getId());
 			Map<String, Double> map = new HashMap<String, Double>();
 			for (ExamScore score : scores) {
 				//分项成绩
@@ -226,7 +233,7 @@ public class ScoreService extends BaseService implements IScoreService{
 				}
 			}
 
-			List<Grade> grades = publicService.findAll(Grade.class);
+			List<Adminclass> adminclasses = adminclassDao.findListByHql("from Adminclass where grade.id = ? order by order desc",new Object[]{grade.getId()});
 
 			double allStd = 0.0;
 			double allStd_100 = 0.0;
@@ -239,8 +246,8 @@ public class ScoreService extends BaseService implements IScoreService{
 			double allStd_jg = 0.0;
 			double allStd_zz = 0.0;
 
-			for (Grade grade : grades) {
-				String gradeName = grade.getName();
+			for (Adminclass adminclass : adminclasses) {
+				String gradeName = adminclass.getName();
 				List<Object> row = new ArrayList<Object>();
 				row.add(gradeName);
 				row.add(getMapValue_Int(map,gradeName+"考试人数"));

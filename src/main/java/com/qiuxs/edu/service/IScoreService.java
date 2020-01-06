@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.qiuxs.edu.entity.ExamBatch;
 import com.qiuxs.edu.entity.ExamScore;
+import com.qiuxs.edu.entity.Grade;
 
 public interface IScoreService extends IBaseService{
 	
@@ -20,9 +21,9 @@ public interface IScoreService extends IBaseService{
 	 */
 	public List<ExamScore> findPageList();
 
-	public List<ExamScore> findPageList(String examId);
+	public List<ExamScore> findPageList(String examId,String gradeId);
 
-	public List<List<Object>> getDataList(ExamBatch exam, String courseId);
+	public List<List<Object>> getDataList(ExamBatch exam, Grade grade, String courseId);
 	
 	
 }

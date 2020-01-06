@@ -76,7 +76,7 @@ public class ScoreAction extends BaseAction{
 		String examId = getPairValue("examId");
 		String gradeId = getPairValue("gradeId");
 
-		List<String> courseNames = Arrays.asList(Strings.split(getPairValue("course"),","));
+		List<String> courseNames = Arrays.asList(Strings.split(getString("pair.course"),","));
 
 		if(!"xls".equals(ext)&&!"xlsx".equals(ext)){//使用xls方式读取
 			putPairValue("state", "导入失败");
@@ -109,22 +109,26 @@ public class ScoreAction extends BaseAction{
 
 		List<ExamBatch> examBatchs = publicService.findAll(ExamBatch.class);
 		List<Course> courses = publicService.findAll(Course.class);
+		List<Grade> grades = publicService.findAll(Grade.class);
 		List<List<Object>> rows = new ArrayList<List<Object>>();
-
-
 		String courseId = getString("pair.subject");
 		String examId = getString("pair.examId");
-		if(Strings.isNotEmpty(examId)){
+		String gradeId = getString("pair.gradeId");
+
+		if(Strings.isNotEmpty(examId)&&Strings.isNotEmpty(courseId)){
 
 			ExamBatch examBatch = publicService.findById(ExamBatch.class,examId);
-			rows = scoreService.getDataList(examBatch,courseId);
+            Course course = publicService.findById(Course.class,courseId);
+            Grade grade = publicService.findById(Grade.class,gradeId);
+			rows = scoreService.getDataList(examBatch,grade,courseId);
 			putPairValue("examName", examBatch.getName());
-			putPairValue("subjectName", "");
+			putPairValue("subjectName", course.getName());
 
 		}
 
 		put("examBatchs",examBatchs);
 		put("courses",courses);
+		put("grades",grades);
 		put("rows",rows);
 
 		return "analysisIndex";
@@ -134,6 +138,7 @@ public class ScoreAction extends BaseAction{
 	public void exportWord(){
 		String examId = getString("pair.examId");
 		String courseId = getString("pair.courseId");
+		String gradeId = getString("pair.gradeId");
 		if(Strings.isEmpty(examId)){
 			return ;
 		}
@@ -142,7 +147,8 @@ public class ScoreAction extends BaseAction{
 		}
 		ExamBatch examBatch = publicService.findById(ExamBatch.class,examId);
 		Course course = publicService.findById(Course.class,courseId);
-		rows = scoreService.getDataList(examBatch, courseId);
+        Grade grade = publicService.findById(Grade.class,gradeId);
+		rows = scoreService.getDataList(examBatch, grade,courseId);
 		String[] titleArr = {"班级","考试人数","100分人数","90-100","80-100","70-100","70以下","优秀率","良好率","及格率","平均分"};
 
 

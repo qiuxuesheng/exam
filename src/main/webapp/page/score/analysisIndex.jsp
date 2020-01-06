@@ -32,11 +32,21 @@
 							</select>
 						</div>
 						<div class="form-group">
+							<label for="grade">年级</label>
+							<select class="form-control" id="grade" name="pair.gradeId" required>
+								<option value="">...</option>
+								<s:iterator value="grades">
+									<option value="${id}" <s:if test="pair.gradeId==id">selected="selected"</s:if>>${name }</option>
+								</s:iterator>
+							</select>
+						</div>
+
+						<div class="form-group">
 							<label for="subject">选择科目</label>
 							<select class="form-control" id="subject"  name="pair.subject" required>
 								<option value="">...</option>
 								<s:iterator value="courses" var="course">
-									<option value="1"<s:if test="pair.subject==#course.id">selected="selected"</s:if>>${course.name}</option>
+									<option value="${course.id}"<s:if test="pair.subject==#course.id">selected="selected"</s:if>>${course.name}</option>
 								</s:iterator>
 							</select>
 						</div>
@@ -61,7 +71,7 @@
 						</tr>
 						</thead>
 						<tbody>
-						<s:iterator value="rows" var="row">
+						<s:iterator value="#rows" var="row">
 							<tr>
 								<s:iterator value="row" var="data">
 									<td>${data }</td>
