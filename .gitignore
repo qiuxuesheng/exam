@@ -1,5 +1,6 @@
+*/target/
+.idea/
 *.log
 *.temp
 *.iml
-target
-.idea
+rebel.xml
