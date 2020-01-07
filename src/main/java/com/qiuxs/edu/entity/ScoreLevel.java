@@ -11,11 +11,12 @@ import java.io.Serializable;
 public class ScoreLevel implements Serializable {
 
     @Id
-    @Column(name = "id")
-    protected String id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "id", unique = true,nullable=false)
+    protected Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "model_id",columnDefinition = "varchar(64)",nullable = false)
+    @JoinColumn(name = "model_id",columnDefinition = "varchar(64)")
     protected WordModel model;
 
     @Column(name = "name",nullable = false)
@@ -33,11 +34,11 @@ public class ScoreLevel implements Serializable {
     @Column(name = "sort",nullable = false)
     protected int sort;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

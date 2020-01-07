@@ -35,6 +35,44 @@ public class BaseAction extends ActionSupport{
 		}
 	}
 
+	protected Integer getInt(String attr){
+		Object value = getObject(attr);
+		return Integer.parseInt(value.toString());
+	}
+
+	protected Double getDouble(String attr){
+		Object value = getObject(attr);
+		return Double.parseDouble(value.toString());
+	}
+
+	protected Boolean getBoolean(String attr){
+		Object value = getObject(attr);
+		if (value==null) return null;
+		return "1".equals(value.toString())||"true".equalsIgnoreCase(value.toString());
+	}
+
+	protected Float getFloat(String attr){
+        Object value = getObject(attr);
+		return Float.parseFloat(value.toString());
+	}
+
+	private Object getObject(String attr) {
+		Object value = ActionContext.getContext().getParameters().get(attr);
+		if (null == value) {
+			return null;
+		} else if (value instanceof String && Strings.isEmpty((String)value)) {
+			return null;
+		} else {
+			if (value.getClass().isArray()) {
+				Object[] values = (Object[])((Object[])value);
+				if (values.length >= 1) {
+					value = values[0];
+				}
+			}
+			return value;
+		}
+	}
+
 	protected void write(String msg) throws Exception{
 		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");   
 		//获取输出流，然后使用  

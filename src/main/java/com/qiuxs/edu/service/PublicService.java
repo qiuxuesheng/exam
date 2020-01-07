@@ -343,4 +343,33 @@ public class PublicService extends BaseService implements IPublicService{
 		hibernateDao.delete(exist);
 
 	}
+
+	public void saveModel(WordModel model) {
+		String hql = "from WordModel where name = ?";
+		List<Object> params = new ArrayList<Object>();
+		params.add(model.getName());
+		if (model.getId()!=null){
+			hql += " and id <> ?";
+			params.add(model.getId());
+		}
+		WordModel exist = (WordModel) hibernateDao.findOneByHql(hql,params);
+		if (exist!=null) {
+			throw new RuntimeException("添加失败，该名称已存在！");
+		}
+		if (model.getId()==null) {//新建
+			hibernateDao.save(model);
+		}else{
+			hibernateDao.update(model);
+		}
+	}
+
+
+	public void saveScoreLevel(ScoreLevel level) {
+		if (level.getId()==null) {//新建
+			hibernateDao.save(level);
+		}else{
+			hibernateDao.update(level);
+		}
+
+	}
 }

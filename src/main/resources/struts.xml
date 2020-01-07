@@ -22,6 +22,8 @@
 			<result name="studentUplaodForm">page/data/studentUplaodForm.jsp</result>
 			<result name="examBatchList">page/data/examBatchList.jsp</result>
 			<result name="examBatchForm">page/data/examBatchForm.jsp</result>
+			<result name="modelList">page/data/modelList.jsp</result>
+			<result name="modelForm">page/data/modelForm.jsp</result>
 		</action>
 		
 		<action name="score!*" class="scoreAction" method="{1}">

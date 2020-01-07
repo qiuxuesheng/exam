@@ -4,12 +4,15 @@ import com.opensymphony.xwork2.ActionContext;
 import com.qiuxs.edu.entity.*;
 import com.qiuxs.edu.service.IPublicService;
 import com.qiuxs.edu.util.MyReadExcel;
+import com.qiuxs.edu.util.MyUtil;
+import com.qiuxs.edu.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -27,6 +30,8 @@ public class PublicAction extends BaseAction{
 	private Grade grade;
 
 	private Course course;
+
+	private WordModel model;
 
 	private List<Adminclass> adminclasses;
 	private Adminclass adminclass;
@@ -390,6 +395,81 @@ public class PublicAction extends BaseAction{
 	}
 
 
+	public String modelList(){
+
+		List<WordModel> modelList = publicService.findAll(WordModel.class);
+
+		put("modelList",modelList);
+
+		return "modelList";
+	}
+	public String modelEdit(){
+
+		int id = getInt("pair.id");
+
+
+		WordModel model = publicService.findById(WordModel.class,id);
+
+		put("model",model);
+
+		return "modelForm";
+	}
+
+	public void modelSave() throws Exception {
+
+		try {
+
+
+			String indexStr = getString("index");
+
+			if (Strings.isEmpty(indexStr)){
+				writeFail("请维护阶段成绩");
+				return;
+			}
+
+			List<Integer> indexList = Arrays.asList(Strings.splitToInt(indexStr));
+
+			model.getLevels().clear();
+			publicService.saveModel(model);
+			for (Integer index : indexList) {
+				ScoreLevel level = new ScoreLevel();
+				level.setModel(model);
+				level.setName(getString("name_"+index));
+				level.setMax(getDouble("max_"+index));
+				level.setMin(getDouble("min_"+index));
+				level.setPercent(getBoolean("percent_"+index));
+				level.setSort(getInt("sort_"+index));
+				publicService.saveScoreLevel(level);
+			}
+
+
+
+			writeSuccese("保存成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			writeFail(e.getMessage());
+		}
+
+	}
+
+	public void modelRemove(){
+
+		try {
+			String id = getPairValue("id");
+			publicService.delete(WordModel.class,id);
+			writeSuccese("删除成功");
+		} catch (Exception e) {
+			try {
+				writeFail(e.getMessage());
+			} catch (Exception e1) {
+			}
+		}
+
+	}
+
+
+
+
 	//============get set=============//
 
 
@@ -492,5 +572,13 @@ public class PublicAction extends BaseAction{
 
 	public void setCourse(Course course) {
 		this.course = course;
+	}
+
+	public WordModel getModel() {
+		return model;
+	}
+
+	public void setModel(WordModel model) {
+		this.model = model;
 	}
 }

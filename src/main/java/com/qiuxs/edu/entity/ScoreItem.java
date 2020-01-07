@@ -17,6 +17,9 @@ public class ScoreItem implements Serializable {
 
     protected Course course;
 
+    /*缺考*/
+    protected boolean miss = false;
+
     protected double score;
 
     @Id
@@ -57,5 +60,14 @@ public class ScoreItem implements Serializable {
 
     public void setScore(double score) {
         this.score = score;
+    }
+
+    public boolean isMiss() {
+        return miss;
+    }
+
+    @Column(name="miss")
+    public void setMiss(boolean miss) {
+        this.miss = miss;
     }
 }

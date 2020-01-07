@@ -102,7 +102,7 @@
                             <li><a href="pub!adminclassList.action" target="mainFrame">班级维护</a></li>
                             <li><a href="pub!studentList.action" target="mainFrame">学生维护</a></li>
                             <li><a href="pub!examBatchList.action" target="mainFrame">考试批次维护</a></li>
-                            <li><a href="pub!examList.action" target="mainFrame">等级线维护</a></li>
+                            <li><a href="pub!modelList.action" target="mainFrame">等级线维护</a></li>
                         </ul>
                     </li>
             </div>

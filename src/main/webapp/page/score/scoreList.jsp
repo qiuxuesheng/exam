@@ -45,7 +45,7 @@
 								<td>${score.student.adminclass.name}</td>
 								<td>${score.student.name}</td>
 								<s:iterator value="courses" var="course" status="st">
-									<th>${score.getScoreItem(course.id)}</th>
+									<th>${score.getScore(course.id)}</th>
 								</s:iterator>
 							</tr>
 						</s:iterator>

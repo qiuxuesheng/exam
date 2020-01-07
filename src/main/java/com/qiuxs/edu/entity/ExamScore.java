@@ -62,7 +62,7 @@ public class ExamScore implements Serializable{
 	}
 
 
-	@OneToMany(targetEntity = ScoreItem.class ,cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JoinColumn(name = "exam_Score_id")
 	public List<ScoreItem> getScoreItems() {
 		return scoreItems;
@@ -73,10 +73,18 @@ public class ExamScore implements Serializable{
 	}
 
 
-	public double getScoreItem(String courseId){
+	public ScoreItem getScoreItem(String courseId){
+		if (scoreItems.size()==0) return null;
+		for (ScoreItem scoreItem : scoreItems) {
+			if (scoreItem.getCourse().getId().equals(courseId)){
+				return scoreItem;
+			}
+		}
+		return null;
+	}
 
+	public double getScore(String courseId){
 		if (scoreItems.size()==0) return 0;
-
 		for (ScoreItem scoreItem : scoreItems) {
 			if (scoreItem.getCourse().getId().equals(courseId)){
 				return scoreItem.getScore();

@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.swing.*;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -31,7 +32,7 @@ public class HibernateDao<T extends Serializable> extends HibernateDaoSupport {
 		
 	}
 
-	public <K extends Serializable>K findById(Class<K> clazz, String id){
+	public <K extends Serializable>K findById(Class<K> clazz, Serializable id){
 		Session session = null;
 		K k = null;
 		try {
@@ -298,6 +299,24 @@ public class HibernateDao<T extends Serializable> extends HibernateDaoSupport {
 			session.delete(object);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
+		} finally {
+		}
+
+	}
+
+	public void delete(Class clazz, Serializable id){
+		Session session = null;
+		try {
+			session = getSessionFactory().getCurrentSession();
+			Object object = session.get(clazz,id);
+			if (object == null){
+				throw new RuntimeException("找不到id为["+id+"]的"+clazz.getName());
+			}
+			session.delete(object);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
 		} finally {
 		}
 

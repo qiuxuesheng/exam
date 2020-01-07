@@ -30,4 +30,8 @@ public interface IPublicService extends IBaseService{
 	void saveCourse(Course course);
 
 	void deleteCourse(String id);
+
+	void saveModel(WordModel model);
+
+	void saveScoreLevel(ScoreLevel level);
 }

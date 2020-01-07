@@ -118,11 +118,9 @@ public class ScoreService extends BaseService implements IScoreService{
 		}
 
 
-		for (int i = 1; i < datas.size(); i++) {
-			if (i==1262){
-				i=i;
-			}
-			row = datas.get(i);
+		for (int rowIndex = 1; rowIndex < datas.size(); rowIndex++) {
+
+			row = datas.get(rowIndex);
 			String testNumber = row.get(numberIndex);
 			String adminclassName = row.get(adminclassIndex);
 			String stuName = row.get(nameIndex);
@@ -130,13 +128,13 @@ public class ScoreService extends BaseService implements IScoreService{
 			//看班级是否存在，不存在则新建
 			Adminclass adminclass = adminclassDao.findOneByHql("from Adminclass where name=?", new Object[]{adminclassName});
 			if (adminclass==null) {
-				throw new RuntimeException("第"+(i+1)+"行出错，班级不存在:"+adminclassName);
+				throw new RuntimeException("第"+(rowIndex+1)+"行出错，班级不存在:"+adminclassName);
 			}
 
 			//查询学生,不存在则新建学生
 			Student student = studentDao.findOneByHql("from Student where name = ? and adminclass.name =? ",new Object[]{stuName,adminclassName});
 			if (student==null) {
-				throw new RuntimeException("第"+(i+1)+"行出错，学生不存在:"+stuName);
+				throw new RuntimeException("第"+(rowIndex+1)+"行出错，学生不存在:"+stuName);
 			}
 
 
@@ -155,17 +153,27 @@ public class ScoreService extends BaseService implements IScoreService{
 				scoreItem.setExamScore(examScore);
 				scoreItem.setId(MyUtil.getUUID());
 				String score = row.get(courseIndexMap.get(courseName));
-				try {
-					scoreItem.setScore(Double.parseDouble("".equals(score)?"999":score));
-				} catch (NumberFormatException e) {
-					throw new RuntimeException("第"+(i+1)+"行出错，"+courseName+"分数异常："+score);
+				if (Strings.isEmpty(score)){
+					scoreItem.setMiss(true);
 				}
+				scoreItem.setScore(convertToScore(score,rowIndex,courseName));
 				hibernateDao.save(scoreItem);
 			}
 			success ++;
 		}
 
 		return success;
+	}
+
+
+	private double convertToScore(String score,int rowIndex,String courseName){
+		double d = 0;
+		try {
+			d = Double.parseDouble("".equals(score)?"0":score);
+		} catch (NumberFormatException e) {
+			throw new RuntimeException("第"+(rowIndex+1)+"行出错，"+courseName+"分数异常："+score);
+		}
+		return d;
 	}
 
 	public List<ExamScore> findPageList() {
@@ -195,15 +203,21 @@ public class ScoreService extends BaseService implements IScoreService{
 
 		if (examBatch !=null) {
 
+
 			List<ExamScore> scores = findPageList(examBatch.getId(),grade.getId());
+
+
 			Map<String, Double> map = new HashMap<String, Double>();
+
 			for (ExamScore score : scores) {
 				//分项成绩
-				double d = score.getScoreItem(courseId);
-				//过滤缺考（999）的学生
-				if(d==999){
+				ScoreItem scoreItem = score.getScoreItem(courseId);
+				//过滤缺考的学生
+				if (scoreItem==null||scoreItem.isMiss()){
 					continue;
 				}
+
+				double d = scoreItem.getScore();
 
 				putMapValue(map, score.getStudent().getAdminclass().getName(),"考试人数");//考试人数
 				putMapValue(map, score.getStudent().getAdminclass().getName(),"总分数",d);
