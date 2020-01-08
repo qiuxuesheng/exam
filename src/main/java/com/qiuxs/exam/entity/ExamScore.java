@@ -64,7 +64,7 @@ public class ExamScore extends NumberIdEntity<Integer> {
 	}
 
 
-	public ScoreItem getScoreItem(String courseId){
+	public ScoreItem getScoreItem(Integer courseId){
 		if (scoreItems.size()==0) return null;
 		for (ScoreItem scoreItem : scoreItems) {
 			if (scoreItem.getCourse().getId().equals(courseId)){
@@ -74,7 +74,7 @@ public class ExamScore extends NumberIdEntity<Integer> {
 		return null;
 	}
 
-	public double getScore(String courseId){
+	public double getScore(Integer courseId){
 		if (scoreItems.size()==0) return 0;
 		for (ScoreItem scoreItem : scoreItems) {
 			if (scoreItem.getCourse().getId().equals(courseId)){

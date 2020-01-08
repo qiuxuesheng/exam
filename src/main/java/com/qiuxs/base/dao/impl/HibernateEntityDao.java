@@ -23,28 +23,35 @@ import com.qiuxs.base.entity.Entity;
 import com.qiuxs.base.util.CollectUtils;
 import com.qiuxs.base.util.Strings;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author chaostone
  */
+@Repository("entityDao")
 public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao {
 
-
-    protected SessionFactory sessionFactory;
-
-
+    @Resource
+    private SessionFactory sessionFactory;
 
 
+    @PostConstruct
+    public void initSessionFactory() {
+        super.setSessionFactory(sessionFactory);
+    }
+    public Session getCurrentSession(){
+        return getSessionFactory().getCurrentSession();
+
+    }
 
     @SuppressWarnings({ "unchecked" })
     public <T extends Entity<ID>, ID extends Serializable> T get(Class<T> clazz, ID id) {
@@ -52,13 +59,12 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
     }
 
     @SuppressWarnings({ "unchecked" })
-    public <T> T get(String entityName, Serializable id) {
+    public <T extends Entity<ID>, ID extends Serializable> T get(String entityName, ID id) {
         if (Strings.contains(entityName, '.')) {
-            getSessionFactory().getCurrentSession();
-            return (T) getSession().get(entityName, id);
+            return (T) getSessionFactory().getCurrentSession().get(entityName, id);
         } else {
             String hql = "from " + entityName + " where id =:id";
-            Query query = getSession().createQuery(hql);
+            Query query = getSessionFactory().getCurrentSession().createQuery(hql);
             query.setParameter("id", id);
             List<?> rs = query.list();
             if (rs.isEmpty()) {
@@ -71,8 +77,16 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
 
     @SuppressWarnings("unchecked")
     public <T extends Entity<?>> List<T> getAll(Class<T> clazz) {
-        String hql = "from " + modelMeta.getEntityType(clazz).getEntityName();
-        Query query = getSession().createQuery(hql);
+        return getAll(clazz,null);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Entity<?>> List<T> getAll(Class<T> clazz,String orderBy) {
+        String hql = "from " + clazz.getName();
+        if (orderBy!=null){
+            hql += " order by " + orderBy;
+        }
+        Query query = getSessionFactory().getCurrentSession().createQuery(hql);
         query.setCacheable(true);
         return query.list();
     }
@@ -88,96 +102,78 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
     public <T extends Entity<?>> List<T> get(Class<T> entityClass, String keyName, Object... values) {
         if (entityClass == null || Strings.isEmpty(keyName) || values == null || values.length == 0) { return Collections
                 .emptyList(); }
-        String entityName = modelMeta.getEntityType(entityClass).getEntityName();
-        return get(entityName, keyName, values);
+        String entityName = entityClass.getName();
+        Session session = getSessionFactory().getCurrentSession();
+        String hql = " from " + entityName + " where " + keyName + " in (:values)";
+        Query query = session.createQuery(hql);
+        query.setParameterList("values",values);
+        return query.list();
+    }
+
+    public <T extends Entity<?>> List<T> get(Class<T> clazz, String[] keyNames, Object[] values) {
+        String hql = createHql(clazz.getName(),keyNames,false);
+        Map<String, Object> params = convertToMap(keyNames, values);
+        return (List<T>) search(hql, params);
     }
 
     public <T extends Entity<?>> List<T> get(Class<T> clazz, String keyName, Collection<?> values) {
         if (clazz == null || Strings.isEmpty(keyName) || values == null || values.isEmpty()) { return Collections
                 .emptyList(); }
-        String entityName = modelMeta.getEntityType(clazz).getEntityName();
-        return get(entityName, keyName, values.toArray());
+        return get(clazz, keyName, values.toArray());
     }
 
 
-
-
-
-
-    public int executeUpdate(final String queryString, final Object... argument) {
-        return QuerySupport.setParameter(getNamedOrCreateQuery(queryString), argument).executeUpdate();
-    }
-
-
-    public int executeUpdate(final String queryString, final Map<String, Object> parameterMap) {
-        return QuerySupport.setParameter(getNamedOrCreateQuery(queryString), parameterMap).executeUpdate();
-    }
-
-    public void saveOrUpdate(Object... entities) {
+    public void saveOrUpdate(Entity<?>... entities) {
         if (null == entities) return;
-        for (Object entity : entities) {
-            if (entity instanceof Collection<?>) {
-                for (Object elementEntry : (Collection<?>) entity) {
-                    persistEntity(elementEntry, null);
-                }
-            } else {
-                persistEntity(entity, null);
-            }
+        for (Entity<?> entity : entities) {
+            persistEntity(entity, null);
         }
     }
 
-    public void save(Object... entities) {
+    public void save(Entity<?>... entities) {
         if (null == entities) return;
-        for (Object entity : entities) {
-            if (entity instanceof Collection<?>) {
-                for (Object elementEntry : (Collection<?>) entity) {
-                    saveEntity(elementEntry, null);
-                }
-            } else {
-                saveEntity(entity, null);
-            }
+        for (Entity<?> entity : entities) {
+            saveEntity(entity, null);
         }
     }
 
 
-    public void saveOrUpdate(Collection<?> entities) {
+    public void saveOrUpdate(Collection<Entity<?>> entities) {
         if (null != entities && !entities.isEmpty()) {
-            for (Object entity : entities) {
+            for (Entity<?> entity : entities) {
                 persistEntity(entity, null);
             }
         }
     }
 
-    private void saveEntity(Object entity, String entityName) {
+    private void saveEntity(Entity<?> entity, String entityName) {
         if (null == entity) return;
         if (null != entityName) {
-            getSession().save(entityName, entity);
+            getSessionFactory().getCurrentSession().save(entityName, entity);
         } else {
             if (entity instanceof HibernateProxy) {
-                getSession().save(entity);
+                getSessionFactory().getCurrentSession().save(entity);
             } else {
-                getSession().save(modelMeta.getEntityType(entity.getClass()).getEntityName(), entity);
+                getSessionFactory().getCurrentSession().save(entity.getClass().getName(), entity);
             }
         }
     }
 
-    private void persistEntity(Object entity, String entityName) {
+    private void persistEntity(Entity<?> entity, String entityName) {
         if (null == entity) return;
         if (null != entityName) {
-            getSession().saveOrUpdate(entityName, entity);
+            getSessionFactory().getCurrentSession().saveOrUpdate(entityName, entity);
         } else {
             if (entity instanceof HibernateProxy) {
-                getSession().saveOrUpdate(entity);
+                getSessionFactory().getCurrentSession().saveOrUpdate(entity);
             } else {
-                getSession().saveOrUpdate(modelMeta.getEntityType(entity.getClass()).getEntityName(), entity);
+                getSessionFactory().getCurrentSession().saveOrUpdate(entity.getClass().getName(), entity);
             }
         }
     }
 
 
-
-
-    public int update(Class<?> entityClass, String attr, Object[] values, Map<String, Object> updateParams) {
+/*    public int update(Class<?> entityClass, String attr, Object[] values, Map<String, Object> updateParams) {
         if (null == values || values.length == 0 || updateParams.isEmpty()) { return 0; }
         String entityName = entityClass.getName();
         StringBuilder hql = new StringBuilder();
@@ -195,35 +191,105 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
         hql.append(" where ").append(attr).append(" in (:ids)");
         newParams.put("ids", values);
         return executeUpdate(hql.toString(), newParams);
-    }
+    }*/
 
-    public void remove(Collection<?> entities) {
+    public void remove(Collection<Entity<?>> entities) {
         if (null == entities || entities.isEmpty()) return;
         for (Object entity : entities)
-            if (null != entity) getSession().delete(entity);
+            if (null != entity) getSessionFactory().getCurrentSession().delete(entity);
     }
 
-    public void remove(Object... entities) {
-        for (Object entity : entities) {
+    public void remove(Entity<?>... entities) {
+        for (Entity entity : entities) {
             if (null != entity) {
-                if (entity instanceof Collection<?>) {
-                    for (Object innerEntity : (Collection<?>) entity) {
-                        getSession().delete(innerEntity);
-                    }
-                } else {
-                    getSession().delete(entity);
-                }
+                getSessionFactory().getCurrentSession().delete(entity);
             }
         }
     }
 
 
+    public List<?> search(String hql, Map<String, Object> params) {
+        Session session = getSessionFactory().getCurrentSession();
+        Query query = session.createQuery(hql);
+        if (params!=null){
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                query.setParameter(entry.getKey(),entry.getValue());
+            }
+        }
+        return query.list();
+    }
+
+    public List<?> search(String hql, Object[] params) {
+        Session session = getSessionFactory().getCurrentSession();
+        Query query = session.createQuery(hql);
+        if (params!=null){
+            for (int i = 0; i < params.length; i++) {
+                query.setParameter(i,params[i]);
+            }
+        }
+        return query.list();
+    }
+
+    public <T extends Entity<?>> long count(Class<T> entityClass, String keyName, Object value) {
+        return count(entityClass.getName(), keyName, value);
+    }
 
 
     public long count(String entityName, String keyName, Object value) {
-        String hql = "select count(*) from " + entityName + " where " + keyName + "=:value";
-        Map<String, Object> params = CollectUtils.newHashMap();
-        params.put("value", value);
+        return count(entityName,new String[]{keyName},new Object[]{value});
+    }
+
+
+
+    public <T extends Entity<?>> boolean exist(Class<T> entityClass, String attr, Object value) {
+        return count(entityClass, attr, value) > 0;
+    }
+
+    public <T extends Entity<?>> boolean exist(Class<T> entityClass, String[] attrs, Object[] values) {
+        return count(entityClass,attrs,values) > 0;
+    }
+
+    public <T extends Entity<?>> long count(Class<T> entityClass, String[] keyNames, Object[] values) {
+        String entityName = entityClass.getName();
+        return count(entityName,keyNames,values);
+
+    }
+
+
+    private Map<String, Object> convertToMap(String[] keyNames, Object[] values) {
+        Map<String, Object> params = CollectUtils.newHashMap();;
+        try {
+            if (keyNames!=null && keyNames.length >0){
+                for (int i = 0; i < keyNames.length; i++) {
+                    String keyName = keyNames[i];
+                    params.put(keyName,values[i]);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("参数列表不正确");
+        }
+        return params;
+    }
+
+
+    private String createHql(String entityName, String[] keyNames, boolean count){
+        StringBuilder hql = new StringBuilder();
+        if (count){
+            hql.append("select count(*) ");
+        }
+        hql.append(" from ").append(entityName).append(" where 1=1 ") ;
+        if (keyNames!=null && keyNames.length >0){
+            for (int i = 0; i < keyNames.length; i++) {
+                hql.append(" and ").append(keyNames[i]).append(" = :").append(keyNames[i]);
+            }
+        }
+        return hql.toString();
+    }
+
+    public long count(String entityName, String[] keyNames, Object[] values) {
+
+        String hql = createHql(entityName,keyNames,true);
+        Map<String, Object> params = convertToMap(keyNames,values);
         List<?> rs = search(hql, params);
         if (rs.isEmpty()) {
             return 0;
@@ -232,53 +298,23 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
         }
     }
 
-    public long count(Class<?> entityClass, String keyName, Object value) {
-        return count(entityClass.getName(), keyName, value);
+    public boolean exist(String hql, Object[] values) {
+        return count(hql,values)>0;
     }
 
-
-    public boolean exist(Class<?> entityClass, String attr, Object value) {
-        return count(entityClass, attr, value) > 0;
+    public boolean exist(String hql, List<Object> values) {
+        return count(hql,values.toArray()) > 0 ;
     }
 
-
-
-    /**
-     * 构造查询记录数目的查询字符串
-     *
-     * @param query
-     * @return query string
-     */
-    private String buildCountQueryStr(Query query) {
-        String queryStr = "select count(*) ";
-        if (query instanceof SQLQuery) {
-            queryStr += "from (" + query.getQueryString() + ")";
-        } else {
-            String lowerCaseQueryStr = query.getQueryString().toLowerCase();
-            String selectWhich = lowerCaseQueryStr.substring(0, query.getQueryString().indexOf("from"));
-            int indexOfDistinct = selectWhich.indexOf("distinct");
-            int indexOfFrom = lowerCaseQueryStr.indexOf("from");
-            // 如果含有distinct
-            if (-1 != indexOfDistinct) {
-                if (Strings.contains(selectWhich, ",")) {
-                    queryStr = "select count("
-                            + query.getQueryString().substring(indexOfDistinct, query.getQueryString().indexOf(",")) + ")";
-                } else {
-                    queryStr = "select count(" + query.getQueryString().substring(indexOfDistinct, indexOfFrom) + ")";
-                }
-            }
-            queryStr += query.getQueryString().substring(indexOfFrom);
+    public long count(String hql, Object[] values) {
+        if (!hql.toLowerCase().contains("select")){
+            hql += "select count(*) " + hql;
         }
-        return queryStr;
+        List<?> rs = search(hql, values);
+        if (rs.isEmpty()) {
+            return 0;
+        } else {
+            return ((Number) rs.get(0)).longValue();
+        }
     }
-
-    @Override
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-
-
-
-
 }

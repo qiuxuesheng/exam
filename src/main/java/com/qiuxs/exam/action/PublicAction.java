@@ -58,7 +58,7 @@ public class PublicAction extends BaseAction {
 	public String courseList(){
 
 
-		List<Course> courses = publicService.findAll(Course.class);
+		List<Course> courses = publicService.getAll(Course.class);
 
 		put("courses",courses);
 
@@ -67,9 +67,8 @@ public class PublicAction extends BaseAction {
 
 	public String courseEdit(){
 
-		String id = getPairValue("id");
 
-		course = publicService.findById(Course.class,id);
+		course = publicService.get(Course.class,getInt("pair.id"));
 
 		return "courseForm";
 	}
@@ -93,7 +92,7 @@ public class PublicAction extends BaseAction {
 
 		try {
 
-			publicService.deleteCourse(getPairValue("id"));
+			publicService.deleteCourse(getInt("pair.id"));
 			writeSuccese("删除成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -111,7 +110,7 @@ public class PublicAction extends BaseAction {
 
 	public String gradeList(){
 
-		List<Grade> grades = publicService.findAll(Grade.class);
+		List<Grade> grades = publicService.getAll(Grade.class);
 		put("grades",grades);
 
 		return "gradeList";
@@ -119,9 +118,7 @@ public class PublicAction extends BaseAction {
 
 	public String gradeEdit(){
 
-		String id = getPairValue("id");
-
-		grade = publicService.findById(Grade.class,id);
+		grade = publicService.get(Grade.class,getInt("pair.id"));
 
 		return "gradeForm";
 	}
@@ -146,7 +143,7 @@ public class PublicAction extends BaseAction {
 
 		try {
 
-			publicService.deleteGrade(getPairValue("id"));
+			publicService.deleteGrade(getInt("pair.id"));
 			writeSuccese("删除成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -165,19 +162,17 @@ public class PublicAction extends BaseAction {
 
 	public String adminclassList(){
 
-		adminclasses = publicService.findAll(Adminclass.class,"grade.name,order");
+		adminclasses = publicService.getAll(Adminclass.class,"grade.name,order");
 
 		return "adminclassList";
 	}
 
 	public String adminclassEdit(){
 
-		String id = getPairValue("id");
-
-		List<Grade> grades = publicService.findAll(Grade.class);
+		List<Grade> grades = publicService.getAll(Grade.class);
 		put("grades",grades);
 
-		adminclass = publicService.findById(Adminclass.class,id);
+		adminclass = publicService.get(Adminclass.class,getInt("pair.id"));
 
 		return "adminclassForm";
 	}
@@ -201,7 +196,7 @@ public class PublicAction extends BaseAction {
 
 		try {
 
-			publicService.deleteAdminclass(getPairValue("id"));
+			publicService.deleteAdminclass(getInt("pair.id"));
 			writeSuccese("删除成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -228,9 +223,8 @@ public class PublicAction extends BaseAction {
 				return "adminclassUplaodForm";
 			}
 
-			String gradeId = getPair().get("gradeId");
 			List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName, -1, 0, 0, 0, 0) ;
-			int count =  publicService.uplaodAdminclass(datas,gradeId);
+			int count =  publicService.uplaodAdminclass(datas,getInt("pair.gradeId"));
 			putPairValue("state", "导入成功");
 			putPairValue("msg", "导入 "+count+" 个班级");
 		} catch (Exception e) {
@@ -238,13 +232,13 @@ public class PublicAction extends BaseAction {
 			putPairValue("msg", e.getMessage());
 			e.printStackTrace();
 		}
-		List<Grade> grades = publicService.findAll(Grade.class);
+		List<Grade> grades = publicService.getAll(Grade.class);
 		put("grades",grades);
 		return "adminclassUplaodForm";
 	}
 
 	public String adminclassUplaodForm(){
-		List<Grade> grades = publicService.findAll(Grade.class);
+		List<Grade> grades = publicService.getAll(Grade.class);
 		put("grades",grades);
 		return "adminclassUplaodForm";
 	}
@@ -256,21 +250,20 @@ public class PublicAction extends BaseAction {
 
 	public String studentList(){
 
-		students = publicService.findAll(Student.class);
+		students = publicService.getAll(Student.class);
 
 		return "studentList";
 	}
 
 	public String studentEdit(){
 
-		String id = getPairValue("id");
 
-		List<Grade> grades = publicService.findAll(Grade.class);
+		List<Grade> grades = publicService.getAll(Grade.class);
 		put("grades",grades);
-		adminclasses = publicService.findAll(Adminclass.class);
+		adminclasses = publicService.getAll(Adminclass.class);
 
 
-		student = publicService.findById(Student.class,id);
+		student = publicService.get(Student.class,getInt("pair.id"));
 
 		return "studentForm";
 	}
@@ -294,7 +287,7 @@ public class PublicAction extends BaseAction {
 
 		try {
 
-			publicService.deleteStudent(getPairValue("id"));
+			publicService.deleteStudent(getInt("pair.id"));
 			writeSuccese("删除成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -321,9 +314,8 @@ public class PublicAction extends BaseAction {
 				return "adminclassUplaodForm";
 			}
 
-			String gradeId = getPair().get("gradeId");
 			List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName, -1, 0, 0, 0, 0) ;
-			int count = publicService.uplaodStudent(datas,gradeId);
+			int count = publicService.uplaodStudent(datas,getInt("pair.gradeId"));
 			putPairValue("state", "导入成功");
 			putPairValue("msg", "导入 "+count+" 个学生");
 		} catch (Exception e) {
@@ -331,13 +323,13 @@ public class PublicAction extends BaseAction {
 			putPairValue("msg", e.getMessage());
 			e.printStackTrace();
 		}
-		List<Grade> grades = publicService.findAll(Grade.class);
+		List<Grade> grades = publicService.getAll(Grade.class);
 		put("grades",grades);
 		return "studentUplaodForm";
 	}
 
 	public String studentUplaodForm(){
-		List<Grade> grades = publicService.findAll(Grade.class);
+		List<Grade> grades = publicService.getAll(Grade.class);
 		put("grades",grades);
 		return "studentUplaodForm";
 	}
@@ -349,19 +341,18 @@ public class PublicAction extends BaseAction {
 
 	public String examBatchList(){
 
-		examBatchs = publicService.findAll(ExamBatch.class);
+		examBatchs = publicService.getAll(ExamBatch.class);
 
 		return "examBatchList";
 	}
 
 	public String examBatchEdit(){
 
-		String id = getPairValue("id");
 
-		List<Grade> grades = publicService.findAll(Grade.class);
+		List<Grade> grades = publicService.getAll(Grade.class);
 		put("grades",grades);
 
-		examBatch = publicService.findById(ExamBatch.class,id);
+		examBatch = publicService.get(ExamBatch.class,getInt("pair.id"));
 
 		return "examBatchForm";
 	}
@@ -383,8 +374,7 @@ public class PublicAction extends BaseAction {
 	public void examBatchRemove(){
 
 		try {
-			String id = getPairValue("id");
-			publicService.deleteExamBatch(id);
+			publicService.deleteExamBatch(getInt("pair.id"));
 			writeSuccese("删除成功");
 		} catch (Exception e) {
 			try {
@@ -397,7 +387,7 @@ public class PublicAction extends BaseAction {
 
 	public String modelList(){
 
-		List<WordModel> modelList = publicService.findAll(WordModel.class);
+		List<WordModel> modelList = publicService.getAll(WordModel.class);
 
 		put("modelList",modelList);
 
@@ -408,7 +398,7 @@ public class PublicAction extends BaseAction {
 		int id = getInt("pair.id");
 
 
-		WordModel model = publicService.findById(WordModel.class,id);
+		WordModel model = publicService.get(WordModel.class,id);
 
 		put("model",model);
 
@@ -455,8 +445,7 @@ public class PublicAction extends BaseAction {
 	public void modelRemove(){
 
 		try {
-			String id = getPairValue("id");
-			publicService.delete(WordModel.class,id);
+			publicService.remove(WordModel.class,getInt("pair.id"));
 			writeSuccese("删除成功");
 		} catch (Exception e) {
 			try {

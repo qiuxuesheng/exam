@@ -13,7 +13,7 @@ public interface IScoreService extends BaseService {
 	 * 上传分数
 	 * @param datas
 	 */
-	public int uploadScore(List<List<String>> datas,String examBatchId,String gradeId,List<String> courseNames);
+	public int uploadScore(List<List<String>> datas,Integer examBatchId,Integer gradeId,List<String> courseNames);
 
 	/**
 	 * 查询成绩
@@ -22,9 +22,9 @@ public interface IScoreService extends BaseService {
 	 */
 	public List<ExamScore> findPageList();
 
-	public List<ExamScore> findPageList(String examId,String gradeId);
+	public List<ExamScore> findPageList(Integer examId,Integer gradeId);
 
-	public List<List<Object>> getDataList(ExamBatch exam, Grade grade, String courseId);
+	public List<List<Object>> getDataList(ExamBatch exam, Grade grade, Integer courseId);
 	
 	
 }

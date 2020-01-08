@@ -1,6 +1,7 @@
 package com.qiuxs.base.dao;
 
 import com.qiuxs.base.entity.Entity;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -25,7 +26,7 @@ public interface EntityDao {
      * @param entityName
      * @param id
      */
-    <T> T get(String entityName, Serializable id);
+    <T extends Entity<ID>, ID extends Serializable> T get(String entityName, ID id);
 
     /**
      * Returns a list of all entity of clazz.
@@ -33,6 +34,12 @@ public interface EntityDao {
      * @param clazz
      */
     <T extends Entity<?>> List<T> getAll(Class<T> clazz);
+    /**
+     * Returns a list of all entity of clazz.
+     *
+     * @param clazz
+     */
+    <T extends Entity<?>> List<T> getAll(Class<T> clazz,String orderBy);
 
     /**
      * 根据属性列举实体
@@ -50,6 +57,10 @@ public interface EntityDao {
      */
     <T extends Entity<ID>, ID extends Serializable> List<T> get(Class<T> entityClass, Collection<ID> values);
 
+    List<?> search(String hql, Map<String, Object> params) ;
+
+    List<?> search(String hql, Object[] params) ;
+
     /**
      * 根据属性列举实体
      *
@@ -60,39 +71,32 @@ public interface EntityDao {
      */
     <T extends Entity<?>> List<T> get(Class<T> clazz, String keyName, Collection<?> values);
 
-
     /**
-     * 执行JPQL/NamedQuery 进行更新或者删除
+     * 根据属性列举实体
      *
-     * @param query
-     * @param arguments
+     * @param <T>
+     * @param clazz
+     * @param values
      */
-    int executeUpdate(String query, Object... arguments);
+    <T extends Entity<?>> List<T> get(Class<T> clazz, String[] keyNames, Object[] values);
 
-    /**
-     * 执行JPQL/NamedQuery进行更新或者删除
-     *
-     * @param query
-     * @param parameterMap
-     */
-    int executeUpdate(String query, Map<String, Object> parameterMap);
 
     /**
      * 保存或更新单个或多个实体.
      */
-    void saveOrUpdate(Object... entities);
+    void saveOrUpdate(Entity<?>... entities);
 
     /**
      * 保存单个或多个实体.
      */
-    void save(Object... entities);
+    void save(Entity<?>... entities);
 
     /**
      * Save Collection
      *
      * @param entities
      */
-    void saveOrUpdate(Collection<?> entities);
+    void saveOrUpdate(Collection<Entity<?>> entities);
 
 
     /**
@@ -100,17 +104,33 @@ public interface EntityDao {
      *
      * @param entities
      */
-    void remove(Object... entities);
+    void remove(Entity<?>... entities);
 
     /**
      * 删除集合内的所有对象
      *
      * @param entities
      */
-    void remove(Collection<?> entities);
+    void remove(Collection<Entity<?>> entities);
 
-    boolean exist(Class<?> entityClass, String attr, Object value);
+    <T extends Entity<?>> boolean exist(Class<T> entityClass, String attr, Object value);
 
-    long count(Class<?> entityClass, String keyName, Object value);
+    <T extends Entity<?>> boolean exist(Class<T> entityClass, String[] attrs, Object[] values);
+
+    boolean exist(String hql, Object[] values);
+
+
+    boolean exist(String hql, List<Object> values);
+
+
+    long count(String entityName, String keyName, Object value);
+
+    <T extends Entity<?>> long count(Class<T> entityClass, String keyName, Object value);
+
+    <T extends Entity<?>> long count(Class<T> entityClass, String[] keyNames, Object[] values);
+
+    long count(String entityName, String[] keyNames, Object[] values);
+
+    long count(String hql, Object[] values);
 
 }

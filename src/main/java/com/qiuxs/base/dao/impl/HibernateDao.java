@@ -12,7 +12,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
 public class HibernateDao<T extends Serializable> extends HibernateDaoSupport {
 
 	@Resource

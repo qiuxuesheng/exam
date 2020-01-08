@@ -59,23 +59,23 @@ public class ScoreAction extends BaseAction {
 	//======================= URL ==============================
 	public String updaloadPage(){
 
-		examBatchs = publicService.findAll(ExamBatch.class);
-		courses = publicService.findAll(Course.class);
-		grades = publicService.findAll(Grade.class);
+		examBatchs = publicService.getAll(ExamBatch.class);
+		courses = publicService.getAll(Course.class);
+		grades = publicService.getAll(Grade.class);
 
 		return "updaloadPage";
 
 	}
 
 	public String uplaodScore(){
-		examBatchs = publicService.findAll(ExamBatch.class);
-		courses = publicService.findAll(Course.class);
-		grades = publicService.findAll(Grade.class);
+		examBatchs = publicService.getAll(ExamBatch.class);
+		courses = publicService.getAll(Course.class);
+		grades = publicService.getAll(Grade.class);
 		//获取扩展名
 		String ext = fileFileName.substring(fileFileName.lastIndexOf(".")+1);
 
-		String examId = getPairValue("examId");
-		String gradeId = getPairValue("gradeId");
+		Integer examId = getInt("pair.examId");
+		Integer gradeId = getInt("pair.gradeId");
 
 		List<String> courseNames = Arrays.asList(Strings.split(getString("pair.course"),","));
 
@@ -108,19 +108,18 @@ public class ScoreAction extends BaseAction {
 
 	public String analysisIndex(){
 
-		List<ExamBatch> examBatchs = publicService.findAll(ExamBatch.class);
-		List<Course> courses = publicService.findAll(Course.class);
-		List<Grade> grades = publicService.findAll(Grade.class);
+		List<ExamBatch> examBatchs = publicService.getAll(ExamBatch.class);
+		List<Course> courses = publicService.getAll(Course.class);
+		List<Grade> grades = publicService.getAll(Grade.class);
 		List<List<Object>> rows = new ArrayList<List<Object>>();
-		String courseId = getString("pair.subject");
-		String examId = getString("pair.examId");
-		String gradeId = getString("pair.gradeId");
+		Integer courseId = getInt("pair.subject");
+		Integer examId = getInt("pair.examId");
+		Integer gradeId = getInt("pair.gradeId");
 
-		if(Strings.isNotEmpty(examId)&&Strings.isNotEmpty(courseId)){
-
-			ExamBatch examBatch = publicService.findById(ExamBatch.class,examId);
-            Course course = publicService.findById(Course.class,courseId);
-            Grade grade = publicService.findById(Grade.class,gradeId);
+		if(courseId!=null){
+			ExamBatch examBatch = publicService.get(ExamBatch.class,examId);
+            Course course = publicService.get(Course.class,courseId);
+            Grade grade = publicService.get(Grade.class,gradeId);
 			rows = scoreService.getDataList(examBatch,grade,courseId);
 			putPairValue("examName", examBatch.getName());
 			putPairValue("subjectName", course.getName());
@@ -137,18 +136,18 @@ public class ScoreAction extends BaseAction {
 
 
 	public void exportWord(){
-		String examId = getString("pair.examId");
-		String courseId = getString("pair.courseId");
-		String gradeId = getString("pair.gradeId");
-		if(Strings.isEmpty(examId)){
+		Integer examId = getInt("pair.examId");
+		Integer courseId = getInt("pair.courseId");
+		Integer gradeId = getInt("pair.gradeId");
+		if(examId==null){
 			return ;
 		}
-		if(Strings.isEmpty(courseId)){
+		if(courseId==null){
 			return ;
 		}
-		ExamBatch examBatch = publicService.findById(ExamBatch.class,examId);
-		Course course = publicService.findById(Course.class,courseId);
-        Grade grade = publicService.findById(Grade.class,gradeId);
+		ExamBatch examBatch = publicService.get(ExamBatch.class,examId);
+		Course course = publicService.get(Course.class,courseId);
+        Grade grade = publicService.get(Grade.class,gradeId);
 		rows = scoreService.getDataList(examBatch, grade,courseId);
 		String[] titleArr = {"班级","考试人数","100分人数","90-100","80-100","70-100","70以下","优秀率","良好率","及格率","平均分"};
 
@@ -340,7 +339,7 @@ public class ScoreAction extends BaseAction {
 	public String scoreList(){
 
 		scores = scoreService.findPageList();
-		courses = publicService.findAll(Course.class);
+		courses = publicService.getAll(Course.class);
 
 		return "scoreList";
 	}

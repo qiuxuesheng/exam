@@ -6,10 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import com.qiuxs.base.service.impl.BaseServiceImpl;
-import com.qiuxs.exam.dao.*;
 import com.qiuxs.exam.entity.*;
 import com.qiuxs.base.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,37 +19,22 @@ import com.qiuxs.base.util.MyUtil;
 @Transactional
 public class ScoreService extends BaseServiceImpl implements IScoreService{
 
-	@Resource(name="examBatchDao")
-	private ExamBatchDao examBatchDao;
-
-	@Resource(name="gradeDao")
-	private GradeDao gradeDao;
-
-	@Resource(name="studentDao")
-	private StudentDao studentDao;
-
-	@Resource(name="examScoreDao")
-	private ExamScoreDao examScoreDao;
-
-	@Resource(name="adminclassDao")
-	private AdminclassDao adminclassDao;
-
 
 	@Autowired
 	private IPublicService publicService;
 
 
 
-	public int uploadScore(List<List<String>> datas,String examBatchId,String gradeId,List<String> courseNames) {
+	public int uploadScore(List<List<String>> datas,Integer examBatchId,Integer gradeId,List<String> courseNames) {
 
 		int success = 0 ;
 
-		ExamBatch examBatch = (ExamBatch) hibernateDao.findById(ExamBatch.class,examBatchId);
+		ExamBatch examBatch = entityDao.get(ExamBatch.class,examBatchId);
 		if (examBatch==null) {
 			throw new RuntimeException("该考试批次不存在！");
 		}
 
-		Grade grade = (Grade) hibernateDao.findById(Grade.class,gradeId);
+		Grade grade = (Grade) entityDao.get(Grade.class,gradeId);
 		if (grade==null) {
 			throw new RuntimeException("该年级不存在！");
 		}
@@ -64,11 +46,11 @@ public class ScoreService extends BaseServiceImpl implements IScoreService{
 		Map<String,Integer> courseIndexMap = new HashMap<String, Integer>();
 		for (String courseName : courseNames) {
 
-			Course course = (Course) hibernateDao.findOneByHql("from Course where name = ? ", new Object[]{courseName});
-			if (course == null){
+			List<?> courses = entityDao.search("from Course where name = ? ", new Object[]{courseName});
+			if (courses.size()==0){
 				throw new RuntimeException("没有维护课程:"+courseName);
 			}
-			courseMap.put(courseName,course);
+			courseMap.put(courseName, (Course) courses.get(0));
 
 			boolean b = false;
 			for (int i = 0; i < row.size(); i++) {
@@ -113,9 +95,9 @@ public class ScoreService extends BaseServiceImpl implements IScoreService{
 
 
 		//删除该考次下的得分记录
-		List<ExamScore> examScores = hibernateDao.findListByHql("from ExamScore where examBatch.id = ?",new Object[]{examBatchId});
+		List<ExamScore> examScores = (List<ExamScore>) entityDao.search("from ExamScore where examBatch.id = ?",new Object[]{examBatchId});
 		for (ExamScore examScore : examScores) {
-			hibernateDao.delete(examScore);
+			entityDao.remove(examScore);
 		}
 
 
@@ -127,38 +109,36 @@ public class ScoreService extends BaseServiceImpl implements IScoreService{
 			String stuName = row.get(nameIndex);
 
 			//看班级是否存在，不存在则新建
-			Adminclass adminclass = adminclassDao.findOneByHql("from Adminclass where name=?", new Object[]{adminclassName});
-			if (adminclass==null) {
+			List<?> adminclasses = entityDao.search("from Adminclass where name=?", new Object[]{adminclassName});
+			if (adminclasses.size()==0) {
 				throw new RuntimeException("第"+(rowIndex+1)+"行出错，班级不存在:"+adminclassName);
 			}
 
 			//查询学生,不存在则新建学生
-			Student student = studentDao.findOneByHql("from Student where name = ? and adminclass.name =? ",new Object[]{stuName,adminclassName});
-			if (student==null) {
+			List<?> students = entityDao.search("from Student where name = ? and adminclass.name =? ",new Object[]{stuName,adminclassName});
+			if (students.size()==0) {
 				throw new RuntimeException("第"+(rowIndex+1)+"行出错，学生不存在:"+stuName);
 			}
 
 
 			//成绩
 			ExamScore examScore = new ExamScore();
-			examScore.setId(MyUtil.getUUID());
-			examScore.setStudent(student);
+			examScore.setStudent((Student) students.get(0));
 			examScore.setExamBatch(examBatch);
 			examScore.setTestNumber(testNumber);
-			examScoreDao.save(examScore);
+			entityDao.saveOrUpdate(examScore);
 
 			//分项成绩
 			for (String courseName : courseNames) {
 				ScoreItem scoreItem = new ScoreItem();
 				scoreItem.setCourse(courseMap.get(courseName));
 				scoreItem.setExamScore(examScore);
-				scoreItem.setId(MyUtil.getUUID());
 				String score = row.get(courseIndexMap.get(courseName));
 				if (Strings.isEmpty(score)){
 					scoreItem.setMiss(true);
 				}
 				scoreItem.setScore(convertToScore(score,rowIndex,courseName));
-				hibernateDao.save(scoreItem);
+				entityDao.saveOrUpdate(scoreItem);
 			}
 			success ++;
 		}
@@ -181,24 +161,24 @@ public class ScoreService extends BaseServiceImpl implements IScoreService{
 		return findPageList(null,null);
 	}
 
-	public List<ExamScore> findPageList(String examId,String gradeId) {
+	public List<ExamScore> findPageList(Integer examId,Integer gradeId) {
 
 		StringBuffer hql = new StringBuffer("from ExamScore where 1=1");
 		List<Object> params = new ArrayList<Object>();
-		if (Strings.isNotEmpty(examId)) {
+		if (examId != null) {
 			hql.append("and examBatch.id=?");
 			params.add(examId);
 		}
-		if (Strings.isNotEmpty(gradeId)) {
+		if (gradeId !=null) {
 			hql.append("and student.adminclass.grade.id=?");
 			params.add(gradeId);
 		}
 		hql.append("order by testNumber");
 
-		return examScoreDao.findListByHql(hql.toString(), params.toArray());
+		return (List<ExamScore>) entityDao.search(hql.toString(), params.toArray());
 	}
 
-	public List<List<Object>> getDataList(ExamBatch examBatch, Grade grade, String courseId){
+	public List<List<Object>> getDataList(ExamBatch examBatch, Grade grade, Integer courseId){
 
 		List<List<Object>> rows = new ArrayList<List<Object>>();
 
@@ -248,7 +228,7 @@ public class ScoreService extends BaseServiceImpl implements IScoreService{
 				}
 			}
 
-			List<Adminclass> adminclasses = adminclassDao.findListByHql("from Adminclass where grade.id = ? order by order desc",new Object[]{grade.getId()});
+			List<Adminclass> adminclasses = (List<Adminclass>) entityDao.search("from Adminclass where grade.id = ? order by order desc",new Object[]{grade.getId()});
 
 			double allStd = 0.0;
 			double allStd_100 = 0.0;
