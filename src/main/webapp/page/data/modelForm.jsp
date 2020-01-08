@@ -139,7 +139,7 @@
             '   <input type="text" name="min_'+index+'" value="" class="form-control" required/>' +
             '</td>' +
             '<td>' +
-            '   <input type="text" name="sort_'+index+'" value="" class="form-control" required/>' +
+            '   <input type="text" name="code_'+index+'" value="" class="form-control" required/>' +
             '</td>' +
             '<td>' +
             '   <button class="btn del_change" type="button" >删除</button>' +

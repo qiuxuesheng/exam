@@ -109,7 +109,7 @@
             var processQueue = [];
             $.each(options.processQueue, function () {
                 var settings = {},
-                    action = this.action,
+                    action = com.qiuxs.base.action,
                     prefix = this.prefix === true ? action : this.prefix;
                 $.each(this, function (key, value) {
                     if ($.type(value) === 'string' &&

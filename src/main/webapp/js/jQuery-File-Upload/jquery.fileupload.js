@@ -595,7 +595,7 @@
             }
             options.paramName = this._getParamName(options);
             if (!options.url) {
-                options.url = options.form.prop('action') || location.href;
+                options.url = options.form.prop('com.qiuxs.base.action') || location.href;
             }
             // The HTTP request method must be "POST" or "PUT":
             options.type = (options.type ||

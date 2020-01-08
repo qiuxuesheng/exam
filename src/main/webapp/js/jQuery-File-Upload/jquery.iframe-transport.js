@@ -120,7 +120,7 @@
                             });
                         form
                             .prop('target', iframe.prop('name'))
-                            .prop('action', options.url)
+                            .prop('com.qiuxs.base.action', options.url)
                             .prop('method', options.type);
                         if (options.formData) {
                             $.each(options.formData, function (index, field) {
