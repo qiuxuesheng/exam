@@ -39,8 +39,8 @@
 							<div class="col-sm-10">
 								<select name="pair.gradeId" class="form-control" id="grade" required>
 									<option value="">...</option>
-									<s:iterator value="grades" var="grade" status="st">
-										<option <s:if test="%{pair.gradeId == #grade.id}">selected="selected"</s:if> value="${grade.id}">${grade.name}</option>
+									<s:iterator value="grades" var="level" status="st">
+										<option <s:if test="%{pair.gradeId == #grade.id}">selected="selected"</s:if> value="${level.id}">${level.name}</option>
 									</s:iterator>
 
 								</select>

@@ -16,7 +16,7 @@ public class WordModel extends BaseCode<Integer> {
     private static final long serialVersionUID = -1884310945952403917L;
 
 
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "model_id")
     protected List<ScoreLevel> levels = new ArrayList<ScoreLevel>();
 

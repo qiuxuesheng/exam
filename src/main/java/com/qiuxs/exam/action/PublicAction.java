@@ -396,10 +396,7 @@ public class PublicAction extends BaseAction {
 	}
 	public String modelEdit(){
 
-		int id = getInt("pair.id");
-
-
-		WordModel model = publicService.get(WordModel.class,id);
+		WordModel model = getEntity(WordModel.class,getInt("pair.id"));
 
 		put("model",model);
 
@@ -420,8 +417,10 @@ public class PublicAction extends BaseAction {
 
 			List<Integer> indexList = Arrays.asList(Strings.splitToInt(indexStr));
 
+			WordModel model = getEntity(WordModel.class,getInt("model.id"));
+			model.setName(getString("model.name"));
+			model.setCode(getString("model.code"));
 			model.getLevels().clear();
-			publicService.saveModel(model);
 			for (Integer index : indexList) {
 				ScoreLevel level = new ScoreLevel();
 				level.setModel(model);
@@ -429,12 +428,10 @@ public class PublicAction extends BaseAction {
 				level.setMax(getDouble("max_"+index));
 				level.setMin(getDouble("min_"+index));
 				level.setPercent(getBoolean("percent_"+index));
-				level.setCode(getString("code_"+index));
-				publicService.saveScoreLevel(level);
+				level.setSort(getInt("sort_"+index));
+				model.getLevels().add(level);
 			}
-
-
-
+			publicService.saveModel(model);
 			writeSuccese("保存成功");
 		} catch (Exception e) {
 			e.printStackTrace();

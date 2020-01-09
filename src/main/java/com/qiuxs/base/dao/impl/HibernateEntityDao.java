@@ -161,19 +161,15 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
     }
 
     private void persistEntity(Entity<?> entity, String entityName) {
-        try {
-            if (null == entity) return;
-            if (null != entityName) {
-                getSessionFactory().getCurrentSession().saveOrUpdate(entityName, entity);
+        if (null == entity) return;
+        if (null != entityName) {
+            getSessionFactory().getCurrentSession().saveOrUpdate(entityName, entity);
+        } else {
+            if (entity instanceof HibernateProxy) {
+                getSessionFactory().getCurrentSession().saveOrUpdate(entity);
             } else {
-                if (entity instanceof HibernateProxy) {
-                    getSessionFactory().getCurrentSession().saveOrUpdate(entity);
-                } else {
-                    getSessionFactory().getCurrentSession().saveOrUpdate(entity.getClass().getName(), entity);
-                }
+                getSessionFactory().getCurrentSession().saveOrUpdate(entity.getClass().getName(), entity);
             }
-        } catch (Exception e) {
-            showTraces(e);
         }
     }
 
