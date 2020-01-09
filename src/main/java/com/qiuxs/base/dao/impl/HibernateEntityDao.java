@@ -126,6 +126,7 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
     public void saveOrUpdate(Entity<?>... entities) {
         if (null == entities) return;
         for (Entity<?> entity : entities) {
+            entity.validate();
             persistEntity(entity, null);
         }
     }
@@ -160,18 +161,30 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
     }
 
     private void persistEntity(Entity<?> entity, String entityName) {
-        if (null == entity) return;
-        if (null != entityName) {
-            getSessionFactory().getCurrentSession().saveOrUpdate(entityName, entity);
-        } else {
-            if (entity instanceof HibernateProxy) {
-                getSessionFactory().getCurrentSession().saveOrUpdate(entity);
+        try {
+            if (null == entity) return;
+            if (null != entityName) {
+                getSessionFactory().getCurrentSession().saveOrUpdate(entityName, entity);
             } else {
-                getSessionFactory().getCurrentSession().saveOrUpdate(entity.getClass().getName(), entity);
+                if (entity instanceof HibernateProxy) {
+                    getSessionFactory().getCurrentSession().saveOrUpdate(entity);
+                } else {
+                    getSessionFactory().getCurrentSession().saveOrUpdate(entity.getClass().getName(), entity);
+                }
             }
+        } catch (Exception e) {
+            showTraces(e);
         }
     }
 
+    private void showTraces(Throwable t) {
+        Throwable next = t.getCause();
+        if (next == null) {
+            throw new RuntimeException(next);
+        } else {
+            showTraces(next);
+        }
+    }
 
 /*    public int update(Class<?> entityClass, String attr, Object[] values, Map<String, Object> updateParams) {
         if (null == values || values.length == 0 || updateParams.isEmpty()) { return 0; }

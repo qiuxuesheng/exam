@@ -14,7 +14,7 @@ public class ScoreLevel extends BaseCode<Integer> {
     private static final long serialVersionUID = -3283840810609347513L;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "model_id",columnDefinition = "varchar(64)")
+    @JoinColumn(name = "model_id",columnDefinition = "int(11)")
     protected WordModel model;
 
     @Column(name = "max",nullable = false)

@@ -14,17 +14,22 @@ public class ScoreItem extends NumberIdEntity<Integer> {
 
     private static final long serialVersionUID = 6147339267990516992L;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="exam_score_id",columnDefinition = "int(11)")
     protected ExamScore examScore;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="course_id",columnDefinition = "int(11)")
     protected Course course;
 
     /*缺考*/
+    @Column(name="miss")
     protected boolean miss = false;
 
+    @Column(name="score")
     protected double score;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="exam_score_id")
     public ExamScore getExamScore() {
         return examScore;
     }
@@ -34,8 +39,6 @@ public class ScoreItem extends NumberIdEntity<Integer> {
     }
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="course_id")
     public Course getCourse() {
         return course;
     }
@@ -44,7 +47,6 @@ public class ScoreItem extends NumberIdEntity<Integer> {
         this.course = course;
     }
 
-    @Column(name="score")
     public double getScore() {
         return score;
     }
@@ -57,7 +59,6 @@ public class ScoreItem extends NumberIdEntity<Integer> {
         return miss;
     }
 
-    @Column(name="miss")
     public void setMiss(boolean miss) {
         this.miss = miss;
     }

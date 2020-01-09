@@ -1,20 +1,31 @@
 package com.qiuxs.base.action;
 
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.Map;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.qiuxs.base.entity.Entity;
+import com.qiuxs.base.service.BaseService;
 import com.qiuxs.base.util.Strings;
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.struts2.ServletActionContext;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.opensymphony.xwork2.ActionSupport;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 
+import javax.annotation.Resource;
+
+@Controller
+@Scope("prototype")
 public class BaseAction extends ActionSupport{
 
-	private Map<String, String> pair ;
-
+	@Resource(name = "baseServiceImpl")
+	protected BaseService baseService;
 
 	private static final long serialVersionUID = -7771051448180391606L;
 
@@ -37,12 +48,32 @@ public class BaseAction extends ActionSupport{
 
 	protected Integer getInt(String attr){
 		Object value = getObject(attr);
-		return Integer.parseInt(value.toString());
+		try {
+			return Integer.parseInt(value.toString());
+		} catch (NumberFormatException e) {
+			return null;
+		}
 	}
 
 	protected Double getDouble(String attr){
 		Object value = getObject(attr);
-		return Double.parseDouble(value.toString());
+		try {
+			return Double.parseDouble(value.toString());
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
+	protected <T extends Entity<ID>,ID extends Serializable> T getEntity(Class<T> clazz,ID id){
+		if (id == null) {
+			try {
+				return (T) Class.forName(clazz.getName()).newInstance();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return baseService.get(clazz,id);
 	}
 
 	protected Boolean getBoolean(String attr){
@@ -53,7 +84,11 @@ public class BaseAction extends ActionSupport{
 
 	protected Float getFloat(String attr){
         Object value = getObject(attr);
-		return Float.parseFloat(value.toString());
+		try {
+			return Float.parseFloat(value.toString());
+		} catch (NumberFormatException e) {
+			return null;
+		}
 	}
 
 	private Object getObject(String attr) {
@@ -136,47 +171,6 @@ public class BaseAction extends ActionSupport{
 		//	    .setPrettyPrinting()
 		//	    .create();
 		//	//：内部类(Inner Class)和嵌套类(Nested Class)的区别
-	}
-	public Map<String, String> getPair() {
-		return pair;
-	}
-	public void setPair(Map<String, String> pair) {
-		this.pair = pair;
-	}
-
-	public String getPairValue(String key){
-
-		String s = null;
-
-		if (pair!=null) {
-			s = pair.get(key);
-		}
-
-		return s==null?"":s;
-
-	}
-	public void putPairValue(String key,String value){
-		
-		
-		if (pair!=null) {
-			pair.put(key, value);
-		}
-		
-		
-	}
-	
-	public int getPairInt(String key){
-
-		int i = 0;
-
-		try {
-			i = Integer.parseInt(getPairValue(key));
-		} catch (Exception e) {
-		}
-
-		return i;
-
-
 	}
 
 }

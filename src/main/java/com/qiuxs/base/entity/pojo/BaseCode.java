@@ -26,6 +26,8 @@ import java.util.Date;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Size;
 
 /**
  * 基础代码的基类
@@ -43,12 +45,13 @@ public abstract class BaseCode<ID extends Number> extends NumberIdEntity<ID> imp
      * 基础代码的代码关键字
      */
     @Column(name="code", unique = true, nullable = false, length = 32)
+    @Size(max = 32,message = "课程代码最大长度为32")
     protected String code;
-
     /**
      * 代码中文名称
      */
-    @Column(name = "name", unique = true,nullable = false,length = 32)
+    @Column(name = "name", unique = true,nullable = false,length = 128)
+    @Size(max = 128,message = "最大长度为128")
     protected String name;
 
     /** 创建时间 */
