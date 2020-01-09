@@ -24,4 +24,6 @@ public interface Entity<ID extends Serializable> extends Serializable {
      */
     boolean isTransient();
 
+    void validate();
+
 }

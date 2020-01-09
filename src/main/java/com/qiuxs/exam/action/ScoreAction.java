@@ -80,14 +80,14 @@ public class ScoreAction extends BaseAction {
 		List<String> courseNames = Arrays.asList(Strings.split(getString("pair.course"),","));
 
 		if(!"xls".equals(ext)&&!"xlsx".equals(ext)){//使用xls方式读取
-			putPairValue("state", "导入失败");
-			putPairValue("msg", "请上传正确格式的Excel文件");
+			put("pair.state", "导入失败");
+			put("pair.msg", "请上传正确格式的Excel文件");
 			return "updaloadPage";
 		}
 
 		if (courseNames.size() == 0){
-			putPairValue("state", "导入失败");
-			putPairValue("msg", "请选择需要录入成绩的课程");
+			put("pair.state", "导入失败");
+			put("pair.msg", "请选择需要录入成绩的课程");
 			return "updaloadPage";
 		}
 
@@ -95,11 +95,11 @@ public class ScoreAction extends BaseAction {
 
 			List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName, -1, 0, 0, 0, 0) ;
 			int count = scoreService.uploadScore(datas, examId ,gradeId,courseNames);
-			putPairValue("state", "导入成功");
-			putPairValue("msg", "导入成绩条数："+count);
+			put("pair.state", "导入成功");
+			put("pair.msg", "导入成绩条数："+count);
 		} catch (Exception e) {
-			putPairValue("state", "上传失败");
-			putPairValue("msg", e.getMessage());
+			put("pair.state", "上传失败");
+			put("pair.msg", e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -121,8 +121,8 @@ public class ScoreAction extends BaseAction {
             Course course = publicService.get(Course.class,courseId);
             Grade grade = publicService.get(Grade.class,gradeId);
 			rows = scoreService.getDataList(examBatch,grade,courseId);
-			putPairValue("examName", examBatch.getName());
-			putPairValue("subjectName", course.getName());
+			put("pair.examName", examBatch.getName());
+			put("pair.subjectName", course.getName());
 
 		}
 

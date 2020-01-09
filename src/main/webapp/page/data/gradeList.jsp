@@ -35,15 +35,15 @@
 						</thead>
 						<tbody>
 
-						<s:iterator value="grades" var="grade" status="st">
+						<s:iterator value="grades" var="level" status="st">
 							<tr>
 								<td>${st.index+1 }</td>
-								<td>${grade.name }</td>
-								<td>${grade.order }</td>
+								<td>${level.name }</td>
+								<td>${level.order }</td>
 								<td>
 									<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-										<button type="button" class="btn" onclick="editGrade('${grade.id}')">修改</button>
-										<button type="button" class="btn" onclick="removeEntity('${grade.id}')">删除</button>
+										<button type="button" class="btn" onclick="editGrade('${level.id}')">修改</button>
+										<button type="button" class="btn" onclick="removeEntity('${level.id}')">删除</button>
 									</div>
 								</td>
 							</tr>

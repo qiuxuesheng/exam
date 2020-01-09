@@ -27,8 +27,8 @@
 
                                 <select name="pair.gradeId" class="form-control" id="grade" required>
                                     <option value="">...</option>
-                                    <s:iterator value="grades" var="grade">
-                                        <option value="${grade.id }" <s:if test="pair.gradeId==id">selected="selected"</s:if> >${grade.name }</option>
+                                    <s:iterator value="grades" var="level">
+                                        <option value="${level.id }" <s:if test="pair.gradeId==id">selected="selected"</s:if> >${level.name }</option>
                                     </s:iterator>
                                 </select>
 

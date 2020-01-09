@@ -30,6 +30,13 @@
                         </div>
 
                         <div class="form-group row">
+                            <label for="code" class="col-sm-2 col-form-label">课程代码</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="course.code" value="${course.code}" class="form-control" id="code" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <div class="col-sm-10">
                                 <input type="hidden" name="course.id" value="${course.id}">
                                 <button type="button" class="btn btn-primary" onclick="saveEntity()">保存</button>

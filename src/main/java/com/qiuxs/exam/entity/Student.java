@@ -15,11 +15,13 @@ public class Student extends NumberIdEntity<Integer> {
 
 	private static final long serialVersionUID = -63470238267616117L;
 
+	@Column(name="name")
 	private String name;
-	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="adminclass_id",columnDefinition = "int(11)")
 	private Adminclass adminclass;
 
-	@Column(name="name")
 	public String getName() {
 		return name;
 	}
@@ -29,8 +31,6 @@ public class Student extends NumberIdEntity<Integer> {
 	}
 
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="adminclass_id")
 	public Adminclass getAdminclass() {
 		return adminclass;
 	}

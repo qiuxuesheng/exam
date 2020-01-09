@@ -64,7 +64,13 @@
                         <div class="form-group row">
                             <label for="name" class="col-sm-2 col-form-label">模板名称</label>
                             <div class="col-sm-10">
-                                    <input type="text" name="model.name" value="${model.name}" class="form-control" id="name" required>
+                                <input type="text" name="model.name" value="${model.name}" class="form-control" id="name" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="code" class="col-sm-2 col-form-label">模板代码</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="model.code" value="${model.code}" class="form-control" id="code" required>
                             </div>
                         </div>
                         <div class="card-body" style="text-align: center">
@@ -87,7 +93,30 @@
                                 </thead>
 
                                 <tbody>
-
+                                <s:iterator value="#model.levels" var="level" status="st">
+                                    <tr>
+                                        <td>
+                                            <input type="text" name="name_${st.index}" value="${level.name}" class="form-control" required/>
+                                            <input type="hidden" name="index" value="${st.index}"/>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="percent_${st.index}" <s:if test="#level.percent">checked</s:if> value="1"/>是
+                                            <input type="radio" name="percent_${st.index}" <s:if test="#level.percent==false">checked</s:if> value="0"/>否
+                                        </td>
+                                        <td>
+                                            <input type="text" name="max_${st.index}" value="${level.max}" class="form-control" required/>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="min_${st.index}" value="${level.min}" class="form-control" required/>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="sort_${st.index}" value="${level.sort}" class="form-control" required/>
+                                        </td>
+                                        <td>
+                                            <button class="btn del_change" type="button" >删除</button>
+                                        </td>
+                                    </tr>
+                                </s:iterator>
                                 </tbody>
                                 <tfoot id="levelList">
 
@@ -120,7 +149,7 @@
 
 
     //增加
-    var index = 0;
+    var index = ${model.levels.size()};
     function addTr() {
         var str =
             '<tr>' +
@@ -139,7 +168,7 @@
             '   <input type="text" name="min_'+index+'" value="" class="form-control" required/>' +
             '</td>' +
             '<td>' +
-            '   <input type="text" name="code_'+index+'" value="" class="form-control" required/>' +
+            '   <input type="text" name="sort_'+index+'" value="" class="form-control" required/>' +
             '</td>' +
             '<td>' +
             '   <button class="btn del_change" type="button" >删除</button>' +

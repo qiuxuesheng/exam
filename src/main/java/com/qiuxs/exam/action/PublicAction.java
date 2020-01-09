@@ -67,8 +67,9 @@ public class PublicAction extends BaseAction {
 
 	public String courseEdit(){
 
+		Course course = getEntity(Course.class,getInt("pair.id"));
 
-		course = publicService.get(Course.class,getInt("pair.id"));
+		put("course",course);
 
 		return "courseForm";
 	}
@@ -218,18 +219,18 @@ public class PublicAction extends BaseAction {
 			String ext = fileFileName.substring(fileFileName.lastIndexOf(".")+1);
 
 			if(!"xls".equals(ext)&&!"xlsx".equals(ext)){//使用xls方式读取
-				putPairValue("state", "上传失败");
-				putPairValue("msg", "文件格式不正确（xls或xlsx）");
+				put("pair.state", "上传失败");
+				put("pair.msg", "文件格式不正确（xls或xlsx）");
 				return "adminclassUplaodForm";
 			}
 
 			List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName, -1, 0, 0, 0, 0) ;
 			int count =  publicService.uplaodAdminclass(datas,getInt("pair.gradeId"));
-			putPairValue("state", "导入成功");
-			putPairValue("msg", "导入 "+count+" 个班级");
+			put("pair.state", "导入成功");
+			put("pair.msg", "导入 "+count+" 个班级");
 		} catch (Exception e) {
-			putPairValue("state", "导入失败");
-			putPairValue("msg", e.getMessage());
+			put("pair.state", "导入失败");
+			put("pair.msg", e.getMessage());
 			e.printStackTrace();
 		}
 		List<Grade> grades = publicService.getAll(Grade.class);
@@ -309,18 +310,18 @@ public class PublicAction extends BaseAction {
 			String ext = fileFileName.substring(fileFileName.lastIndexOf(".")+1);
 
 			if(!"xls".equals(ext)&&!"xlsx".equals(ext)){//使用xls方式读取
-				putPairValue("state", "上传失败");
-				putPairValue("msg", "文件格式不正确（xls或xlsx）");
+				put("pair.state", "上传失败");
+				put("pair.msg", "文件格式不正确（xls或xlsx）");
 				return "adminclassUplaodForm";
 			}
 
 			List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName, -1, 0, 0, 0, 0) ;
 			int count = publicService.uplaodStudent(datas,getInt("pair.gradeId"));
-			putPairValue("state", "导入成功");
-			putPairValue("msg", "导入 "+count+" 个学生");
+			put("pair.state", "导入成功");
+			put("pair.msg", "导入 "+count+" 个学生");
 		} catch (Exception e) {
-			putPairValue("state", "导入失败");
-			putPairValue("msg", e.getMessage());
+			put("pair.state", "导入失败");
+			put("pair.msg", e.getMessage());
 			e.printStackTrace();
 		}
 		List<Grade> grades = publicService.getAll(Grade.class);
@@ -395,10 +396,7 @@ public class PublicAction extends BaseAction {
 	}
 	public String modelEdit(){
 
-		int id = getInt("pair.id");
-
-
-		WordModel model = publicService.get(WordModel.class,id);
+		WordModel model = getEntity(WordModel.class,getInt("pair.id"));
 
 		put("model",model);
 
@@ -419,8 +417,10 @@ public class PublicAction extends BaseAction {
 
 			List<Integer> indexList = Arrays.asList(Strings.splitToInt(indexStr));
 
+			WordModel model = getEntity(WordModel.class,getInt("model.id"));
+			model.setName(getString("model.name"));
+			model.setCode(getString("model.code"));
 			model.getLevels().clear();
-			publicService.saveModel(model);
 			for (Integer index : indexList) {
 				ScoreLevel level = new ScoreLevel();
 				level.setModel(model);
@@ -428,12 +428,10 @@ public class PublicAction extends BaseAction {
 				level.setMax(getDouble("max_"+index));
 				level.setMin(getDouble("min_"+index));
 				level.setPercent(getBoolean("percent_"+index));
-				level.setCode(getString("code_"+index));
-				publicService.saveScoreLevel(level);
+				level.setSort(getInt("sort_"+index));
+				model.getLevels().add(level);
 			}
-
-
-
+			publicService.saveModel(model);
 			writeSuccese("保存成功");
 		} catch (Exception e) {
 			e.printStackTrace();

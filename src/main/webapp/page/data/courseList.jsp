@@ -28,7 +28,8 @@
                         <tr>
                             <th style="width: 10%">序号</th>
                             <th style="width: 20%">课程名称</th>
-                            <th style="width: 20%">操作${p.get('1')}${course1.name}${courses1.get(1).name}</th>
+                            <th style="width: 20%">课程代码</th>
+                            <th style="width: 20%">操作</th>
 
                         </tr>
                         </thead>
@@ -38,6 +39,7 @@
                             <tr>
                                 <td>${st.index+1 }</td>
                                 <td>${course.name }</td>
+                                <td>${course.code }</td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
                                         <button type="button" class="btn" onclick="editEntity('${course.id}')">修改</button>

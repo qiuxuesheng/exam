@@ -126,6 +126,7 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
     public void saveOrUpdate(Entity<?>... entities) {
         if (null == entities) return;
         for (Entity<?> entity : entities) {
+            entity.validate();
             persistEntity(entity, null);
         }
     }
@@ -172,6 +173,14 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
         }
     }
 
+    private void showTraces(Throwable t) {
+        Throwable next = t.getCause();
+        if (next == null) {
+            throw new RuntimeException(next);
+        } else {
+            showTraces(next);
+        }
+    }
 
 /*    public int update(Class<?> entityClass, String attr, Object[] values, Map<String, Object> updateParams) {
         if (null == values || values.length == 0 || updateParams.isEmpty()) { return 0; }

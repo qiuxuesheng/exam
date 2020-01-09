@@ -17,17 +17,23 @@ public class ExamScore extends NumberIdEntity<Integer> {
 	private static final long serialVersionUID = 5093476455024646521L;
 
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="std_id",columnDefinition = "int(11)")
 	private Student student;
-	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="exam_batch_id",columnDefinition = "int(11)")
 	private ExamBatch examBatch;
 
 	/*座位号*/
+	@Column(name="test_number")
 	private String testNumber;
 
+
+	@OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@JoinColumn(name = "exam_score_id")
 	protected List<ScoreItem> scoreItems = new ArrayList<ScoreItem>();
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="std_id")
 	public Student getStudent() {
 		return student;
 	}
@@ -35,8 +41,6 @@ public class ExamScore extends NumberIdEntity<Integer> {
 		this.student = student;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="exam_batch_id")
 	public ExamBatch getExamBatch() {
 		return examBatch;
 	}
@@ -44,7 +48,6 @@ public class ExamScore extends NumberIdEntity<Integer> {
 		this.examBatch = examBatch;
 	}
 	
-	@Column(name="test_number")
 	public String getTestNumber() {
 		return testNumber;
 	}
@@ -52,9 +55,6 @@ public class ExamScore extends NumberIdEntity<Integer> {
 		this.testNumber = testNumber;
 	}
 
-
-	@OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-	@JoinColumn(name = "exam_Score_id")
 	public List<ScoreItem> getScoreItems() {
 		return scoreItems;
 	}
