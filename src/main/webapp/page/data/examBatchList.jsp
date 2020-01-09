@@ -28,6 +28,7 @@
 						<tr>
 							<th style="width: 10%">序号</th>
 							<th style="width: 20%">考试批次</th>
+							<th style="width: 20%">代码</th>
 							<th style="width: 20%">操作</th>
 
 						</tr>
@@ -38,6 +39,7 @@
 							<tr>
 								<td>${st.index+1 }</td>
 								<td>${examBatch.name }</td>
+								<td>${examBatch.code }</td>
 								<td>
 									<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
 										<button type="button" class="btn" onclick="editEntity('${examBatch.id}')">修改</button>
@@ -61,7 +63,7 @@
 <script>
 	function editEntity(id) {
 
-		window.location.href = "pub!examBatchEdit.action?pair.id="+id;
+		window.location.href = "examBatch!examBatchEdit.action?pair.id="+id;
 	}
 
 	function removeEntity(id) {
@@ -70,7 +72,7 @@
 			return;
 		}
 		$.ajax({
-			url : "pub!examBatchRemove.action",
+			url : "examBatch!examBatchRemove.action",
 			type : "post",
 			data : {
 				"pair.id" : id

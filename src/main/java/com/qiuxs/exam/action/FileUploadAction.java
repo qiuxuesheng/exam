@@ -1,4 +1,4 @@
-package com.qiuxs.base.util;
+package com.qiuxs.exam.action;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-@Controller("fileAction")
+@Controller("fileUpload")
 @Scope("prototype")
 public class FileUploadAction extends ActionSupport{
 

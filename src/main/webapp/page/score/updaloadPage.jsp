@@ -79,7 +79,7 @@
 
 			</div>
 			<div class="card-body">
-				${pair.state}<br/>${pair.msg}
+				${state}<br/>${msg}
 			</div>
 		</div>
 	</div>

@@ -28,7 +28,7 @@
 						<tr>
 							<th style="width: 10%">序号</th>
 							<th style="width: 50%">年级名称</th>
-							<th style="width: 20%">排序</th>
+							<th style="width: 20%">代码</th>
 							<th style="width: 20%">操作</th>
 
 						</tr>
@@ -39,7 +39,7 @@
 							<tr>
 								<td>${st.index+1 }</td>
 								<td>${level.name }</td>
-								<td>${level.order }</td>
+								<td>${level.code }</td>
 								<td>
 									<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
 										<button type="button" class="btn" onclick="editGrade('${level.id}')">修改</button>
@@ -63,7 +63,7 @@
 <script>
 	function editGrade(id) {
 
-		window.location.href = "pub!gradeEdit.action?pair.id="+id;
+		window.location.href = "grade!gradeEdit.action?pair.id="+id;
 	}
 
 	function removeEntity(id) {
@@ -72,7 +72,7 @@
 			return;
 		}
 		$.ajax({
-			url : "pub!gradeRemove.action",
+			url : "grade!gradeRemove.action",
 			type : "post",
 			data : {
 				"pair.id" : id

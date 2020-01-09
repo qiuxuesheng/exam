@@ -20,7 +20,7 @@
             <div class="card-body">
 
                 <div class="table-responsive">
-                    <form id="entityForm" style="width: 95%" action="pub!gradeSave.action" method="post">
+                    <form id="entityForm" style="width: 95%" action="grade!gradeSave.action" method="post">
                         <div class="form-group row">
                             <label for="inputEmail3" class="col-sm-2 col-form-label">年级名称</label>
                             <div class="col-sm-10">
@@ -28,9 +28,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">排序</label>
+                            <label for="code" class="col-sm-2 col-form-label">代码</label>
                             <div class="col-sm-10">
-                                <input type="text" name="grade.order" value="${grade.order}" class="form-control" id="inputPassword3" placeholder="" required >
+                                <input type="text" name="grade.code" value="${grade.code}" class="form-control" id="code" placeholder="" required >
                             </div>
                         </div>
                         <div class="form-group row">
@@ -63,7 +63,7 @@
         }
         var formData = form.serialize();
         $.ajax({
-            url : "pub!gradeSave.action",
+            url : "grade!gradeSave.action",
             type : "post",
             data : formData,
             dataType : "json",
@@ -71,7 +71,7 @@
                 console.log(result)
                 alert(result.msg)
                 if (result.status == 'success'){
-                    window.location.href = "pub!gradeList.action";
+                    window.location.href = "grade!gradeList.action";
                 }
             },
             error : function() {

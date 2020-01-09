@@ -10,8 +10,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import com.qiuxs.base.action.BaseAction;
-import com.qiuxs.exam.entity.Course;
-import com.qiuxs.exam.entity.Grade;
+import com.qiuxs.exam.entity.*;
 import com.qiuxs.base.util.Strings;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -23,14 +22,10 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.struts2.ServletActionContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import com.qiuxs.exam.entity.ExamBatch;
-import com.qiuxs.exam.entity.ExamScore;
-import com.qiuxs.exam.service.IPublicService;
-import com.qiuxs.exam.service.IScoreService;
+import com.qiuxs.exam.service.ScoreService;
 import com.qiuxs.base.util.MyReadExcel;
 
 @Controller
@@ -50,27 +45,24 @@ public class ScoreAction extends BaseAction {
 	private List<List<Object>> rows = new ArrayList<List<Object>>();
 	//================== 注入 ==========================//
 	@Resource(name="scoreService")
-	private IScoreService scoreService;
-
-	@Autowired
-	private IPublicService publicService;
+	private ScoreService scoreService;
 
 
 	//======================= URL ==============================
 	public String updaloadPage(){
 
-		examBatchs = publicService.getAll(ExamBatch.class);
-		courses = publicService.getAll(Course.class);
-		grades = publicService.getAll(Grade.class);
+		examBatchs = baseService.getAll(ExamBatch.class);
+		courses = baseService.getAll(Course.class);
+		grades = baseService.getAll(Grade.class);
 
 		return "updaloadPage";
 
 	}
 
 	public String uplaodScore(){
-		examBatchs = publicService.getAll(ExamBatch.class);
-		courses = publicService.getAll(Course.class);
-		grades = publicService.getAll(Grade.class);
+		examBatchs = baseService.getAll(ExamBatch.class);
+		courses = baseService.getAll(Course.class);
+		grades = baseService.getAll(Grade.class);
 		//获取扩展名
 		String ext = fileFileName.substring(fileFileName.lastIndexOf(".")+1);
 
@@ -80,14 +72,14 @@ public class ScoreAction extends BaseAction {
 		List<String> courseNames = Arrays.asList(Strings.split(getString("pair.course"),","));
 
 		if(!"xls".equals(ext)&&!"xlsx".equals(ext)){//使用xls方式读取
-			put("pair.state", "导入失败");
-			put("pair.msg", "请上传正确格式的Excel文件");
+			put("state", "导入失败");
+			put("msg", "请上传正确格式的Excel文件");
 			return "updaloadPage";
 		}
 
 		if (courseNames.size() == 0){
-			put("pair.state", "导入失败");
-			put("pair.msg", "请选择需要录入成绩的课程");
+			put("state", "导入失败");
+			put("msg", "请选择需要录入成绩的课程");
 			return "updaloadPage";
 		}
 
@@ -95,11 +87,11 @@ public class ScoreAction extends BaseAction {
 
 			List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName, -1, 0, 0, 0, 0) ;
 			int count = scoreService.uploadScore(datas, examId ,gradeId,courseNames);
-			put("pair.state", "导入成功");
-			put("pair.msg", "导入成绩条数："+count);
+			put("state", "导入成功");
+			put("msg", "导入成绩条数："+count);
 		} catch (Exception e) {
-			put("pair.state", "上传失败");
-			put("pair.msg", e.getMessage());
+			put("state", "上传失败");
+			put("msg", e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -108,27 +100,30 @@ public class ScoreAction extends BaseAction {
 
 	public String analysisIndex(){
 
-		List<ExamBatch> examBatchs = publicService.getAll(ExamBatch.class);
-		List<Course> courses = publicService.getAll(Course.class);
-		List<Grade> grades = publicService.getAll(Grade.class);
+		List<ExamBatch> examBatchs = baseService.getAll(ExamBatch.class);
+		List<Course> courses = baseService.getAll(Course.class);
+		List<Grade> grades = baseService.getAll(Grade.class);
+		List<WordModel> models = baseService.getAll(WordModel.class);
 		List<List<Object>> rows = new ArrayList<List<Object>>();
 		Integer courseId = getInt("pair.subject");
 		Integer examId = getInt("pair.examId");
 		Integer gradeId = getInt("pair.gradeId");
 
 		if(courseId!=null){
-			ExamBatch examBatch = publicService.get(ExamBatch.class,examId);
-            Course course = publicService.get(Course.class,courseId);
-            Grade grade = publicService.get(Grade.class,gradeId);
+			ExamBatch examBatch = baseService.get(ExamBatch.class,examId);
+            Course course = baseService.get(Course.class,courseId);
+            Grade grade = baseService.get(Grade.class,gradeId);
+			WordModel model = baseService.get(WordModel.class,getInt("modelId"));
 			rows = scoreService.getDataList(examBatch,grade,courseId);
-			put("pair.examName", examBatch.getName());
-			put("pair.subjectName", course.getName());
+			put("examName", examBatch.getName());
+			put("subjectName", course.getName());
 
 		}
 
 		put("examBatchs",examBatchs);
 		put("courses",courses);
 		put("grades",grades);
+		put("models",models);
 		put("rows",rows);
 
 		return "analysisIndex";
@@ -145,9 +140,9 @@ public class ScoreAction extends BaseAction {
 		if(courseId==null){
 			return ;
 		}
-		ExamBatch examBatch = publicService.get(ExamBatch.class,examId);
-		Course course = publicService.get(Course.class,courseId);
-        Grade grade = publicService.get(Grade.class,gradeId);
+		ExamBatch examBatch = baseService.get(ExamBatch.class,examId);
+		Course course = baseService.get(Course.class,courseId);
+        Grade grade = baseService.get(Grade.class,gradeId);
 		rows = scoreService.getDataList(examBatch, grade,courseId);
 		String[] titleArr = {"班级","考试人数","100分人数","90-100","80-100","70-100","70以下","优秀率","良好率","及格率","平均分"};
 
@@ -339,7 +334,7 @@ public class ScoreAction extends BaseAction {
 	public String scoreList(){
 
 		scores = scoreService.findPageList();
-		courses = publicService.getAll(Course.class);
+		courses = baseService.getAll(Course.class);
 
 		return "scoreList";
 	}

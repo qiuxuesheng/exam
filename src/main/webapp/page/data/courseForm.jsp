@@ -20,7 +20,7 @@
             <div class="card-body">
 
                 <div class="table-responsive">
-                    <form style="width: 95%" action="pub!courseSave.action" id="entityForm" method="post">
+                    <form style="width: 95%" action="course!courseSave.action" id="entityForm" method="post">
 
                         <div class="form-group row">
                             <label for="name" class="col-sm-2 col-form-label">课程名称</label>
@@ -64,14 +64,14 @@
         }
         var formData = form.serialize();
         $.ajax({
-            url : "pub!courseSave.action",
+            url : "course!courseSave.action",
             type : "post",
             data : formData,
             dataType : "json",
             success : function(result) {
                 alert(result.msg)
                 if (result.status == 'success'){
-                    window.location.href = "pub!courseList.action";
+                    window.location.href = "course!courseList.action";
                 }
             },
             error : function() {

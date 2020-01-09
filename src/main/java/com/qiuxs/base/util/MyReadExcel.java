@@ -25,11 +25,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * Excel文件操作工具类，包括读、写、合并等功能
  */
 public class MyReadExcel {
-	
-	
-	
-	
-	
 
 	/**
 	 * 自动根据文件扩展名，调用对应的读取方法

@@ -9,23 +9,39 @@
 			<result>page/main.jsp</result>
 		</action>
 
-		<action name="pub!*" class="publicAction" method="{1}">
+		<action name="course!*" class="com.qiuxs.exam.action.CourseAction" method="{1}">
 			<result name="courseList">page/data/courseList.jsp</result>
 			<result name="courseForm">page/data/courseForm.jsp</result>
+		</action>
+
+		<action name="grade!*" class="com.qiuxs.exam.action.GradeAction" method="{1}">
 			<result name="gradeList">page/data/gradeList.jsp</result>
 			<result name="gradeForm">page/data/gradeForm.jsp</result>
+		</action>
+
+		<action name="adminclass!*" class="com.qiuxs.exam.action.AdminclassAction" method="{1}">
 			<result name="adminclassList">page/data/adminclassList.jsp</result>
 			<result name="adminclassForm">page/data/adminclassForm.jsp</result>
 			<result name="adminclassUplaodForm">page/data/adminclassUplaodForm.jsp</result>
+		</action>
+
+		<action name="student!*" class="com.qiuxs.exam.action.StudentAction" method="{1}">
 			<result name="studentList">page/data/studentList.jsp</result>
 			<result name="studentForm">page/data/studentForm.jsp</result>
 			<result name="studentUplaodForm">page/data/studentUplaodForm.jsp</result>
+		</action>
+
+		<action name="examBatch!*" class="com.qiuxs.exam.action.ExamBatchAction" method="{1}">
 			<result name="examBatchList">page/data/examBatchList.jsp</result>
 			<result name="examBatchForm">page/data/examBatchForm.jsp</result>
+		</action>
+
+		<action name="model!*" class="com.qiuxs.exam.action.WordModelAction" method="{1}">
 			<result name="modelList">page/data/modelList.jsp</result>
 			<result name="modelForm">page/data/modelForm.jsp</result>
 		</action>
-		
+
+
 		<action name="score!*" class="scoreAction" method="{1}">
 			<interceptor-ref name="defaultStack" />
 			<result name="updaloadPage">page/score/updaloadPage.jsp</result>
@@ -34,10 +50,11 @@
 		</action>
 
 		<!-- 文件操作 -->
-		<action name="fileUpload" class="fileAction" method="uploadFile">
+		<action name="fileUpload" class="com.qiuxs.exam.action.FileUploadAction" method="uploadFile">
 			<interceptor-ref name="defaultStack" />
 		</action>
-		<action name="fileDownload" class="fileAction" method="download">
+
+		<action name="fileDownload" class="com.qiuxs.exam.action.FileDownloadAction" method="download">
 			<interceptor-ref name="defaultStack" />
 			<result name="success" type="stream">
 				<param name="contentType">application/octet-stream</param>

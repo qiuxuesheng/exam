@@ -59,7 +59,7 @@
             <div class="card-body">
 
                 <div class="table-responsive">
-                    <form style="width: 95%" action="pub!modelSave.action" id="entityForm" method="post">
+                    <form style="width: 95%" action="model!modelSave.action" id="entityForm" method="post">
 
                         <div class="form-group row">
                             <label for="name" class="col-sm-2 col-form-label">模板名称</label>
@@ -195,14 +195,14 @@
         }
         var formData = form.serialize();
         $.ajax({
-            url : "pub!modelSave.action",
+            url : "model!modelSave.action",
             type : "post",
             data : formData,
             dataType : "json",
             success : function(result) {
                 alert(result.msg)
                 if (result.status == 'success'){
-                    window.location.href = "pub!modelList.action";
+                    window.location.href = "model!modelList.action";
                 }
             },
             error : function() {

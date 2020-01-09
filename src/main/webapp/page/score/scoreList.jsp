@@ -65,11 +65,11 @@
 <script>
 	function editAdminclass(id) {
 
-		window.location.href = "pub!adminclassEdit.action?pair.id="+id;
+		window.location.href = "adminclass!adminclassEdit.action?pair.id="+id;
 	}
 	function adminclassUplaodForm(id) {
 
-		window.location.href = "pub!adminclassUplaodForm.action";
+		window.location.href = "adminclass!adminclassUplaodForm.action";
 	}
 
 	function removeEntity(id) {
@@ -78,7 +78,7 @@
 			return;
 		}
 		$.ajax({
-			url : "pub!adminclassRemove.action",
+			url : "adminclass!adminclassRemove.action",
 			type : "post",
 			data : {
 				"pair.id" : id

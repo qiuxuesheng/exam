@@ -47,5 +47,8 @@
     </bean>
     <tx:annotation-driven transaction-manager="txManager" />
 
+    <tx:annotation-driven proxy-target-class="true"/>
+
+
 
 </beans>

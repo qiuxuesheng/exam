@@ -20,24 +20,17 @@
             <div class="card-body">
 
                 <div class="table-responsive">
-                    <form style="width: 95%" action="pub!examBatchSave.action" id="entityForm" method="post">
-                        <%--<div class="form-group row">
-                            <label for="grade" class="col-sm-2 col-form-label">年级</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" id="grade" required>
-                                    <option value="">...</option>
-                                    <s:iterator value="grades" var="grade" status="st">
-                                        <option <s:if test="%{examBatch.adminclass.grade.id == #grade.id}">selected="selected"</s:if> value="${grade.id}">${grade.name}</option>
-                                    </s:iterator>
-
-                                </select>
-                            </div>
-                        </div>--%>
-
+                    <form style="width: 95%" action="examBatch!examBatchSave.action" id="entityForm" method="post">
                         <div class="form-group row">
                             <label for="name" class="col-sm-2 col-form-label">批次名称</label>
                             <div class="col-sm-10">
                                 <input type="text" name="examBatch.name" value="${examBatch.name}" class="form-control" id="name" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="code" class="col-sm-2 col-form-label">代码</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="examBatch.code" value="${examBatch.code}" class="form-control" id="code" required>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -70,14 +63,14 @@
         }
         var formData = form.serialize();
         $.ajax({
-            url : "pub!examBatchSave.action",
+            url : "examBatch!examBatchSave.action",
             type : "post",
             data : formData,
             dataType : "json",
             success : function(result) {
                 alert(result.msg)
                 if (result.status == 'success'){
-                    window.location.href = "pub!examBatchList.action";
+                    window.location.href = "examBatch!examBatchList.action";
                 }
             },
             error : function() {

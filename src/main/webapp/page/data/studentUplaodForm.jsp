@@ -20,7 +20,7 @@
             <div class="card-body">
 
                 <div class="table-responsive">
-                    <form action="pub!studentUplaodSave.action" method="post" enctype="multipart/form-data" style="width: 95%">
+                    <form action="student!studentUplaodSave.action" method="post" enctype="multipart/form-data" style="width: 95%">
                         <div class="form-group row">
                             <label for="grade" class="col-sm-2 col-form-label">所属年级</label>
                             <div class="col-sm-10">
@@ -54,7 +54,7 @@
 
             </div>
             <div class="card-body">
-                ${pair.state}<br/>${pair.msg}
+                ${state}<br/>${msg}
             </div>
         </div>
     </div>

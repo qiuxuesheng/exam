@@ -151,6 +151,16 @@
 			<version>1.1.0.Final</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.2.4.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -173,7 +183,7 @@
 			<version>2.3.14</version>
 		</dependency>
 
-		<dependency>
+<!--		<dependency>
 			<groupId>org.beangle.commons</groupId>
 			<artifactId>beangle-commons-model</artifactId>
 			<version>${beangle.version}</version>
@@ -216,7 +226,7 @@
 			<artifactId>beangle-test-selenium</artifactId>
 			<version>${beangle.version}</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency>-->
 
 
 	</dependencies>

@@ -66,12 +66,12 @@
 <script>
     function editEntity(id) {
 
-        window.location.href = "pub!studentEdit.action?pair.id="+id;
+        window.location.href = "student!studentEdit.action?pair.id="+id;
     }
 
     function studentUplaodForm() {
 
-        window.location.href = "pub!studentUplaodForm.action";
+        window.location.href = "student!studentUplaodForm.action";
     }
 
     function removeEntity(id) {
@@ -80,7 +80,7 @@
             return;
         }
         $.ajax({
-            url : "pub!studentRemove.action",
+            url : "student!studentRemove.action",
             type : "post",
             data : {
                 "pair.id" : id

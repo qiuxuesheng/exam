@@ -61,7 +61,7 @@
 <script>
     function editEntity(id) {
 
-        window.location.href = "pub!modelEdit.action?pair.id="+id;
+        window.location.href = "model!modelEdit.action?pair.id="+id;
     }
 
     function removeEntity(id) {
@@ -70,7 +70,7 @@
             return;
         }
         $.ajax({
-            url : "pub!modelRemove.action",
+            url : "model!modelRemove.action",
             type : "post",
             data : {
                 "pair.id" : id

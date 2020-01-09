@@ -50,6 +50,15 @@
 								</s:iterator>
 							</select>
 						</div>
+						<div class="form-group">
+							<label for="model">选择模板</label>
+							<select class="form-control" id="model"  name="modelId" required>
+								<option value="">...</option>
+								<s:iterator value="models" var="model">
+									<option value="${model.id}"<s:if test="modelId==#model.id">selected="selected"</s:if>>${model.name}</option>
+								</s:iterator>
+							</select>
+						</div>
 						<button type="submit" class="btn btn-default">统计</button>
 						<input type="button" onclick="exportWord()" value="下载">
 					</form>
@@ -94,11 +103,11 @@
 <script>
 	function editAdminclass(id) {
 
-		window.location.href = "pub!adminclassEdit.action?pair.id="+id;
+		window.location.href = "adminclass!adminclassEdit.action?pair.id="+id;
 	}
 	function adminclassUplaodForm(id) {
 
-		window.location.href = "pub!adminclassUplaodForm.action";
+		window.location.href = "adminclass!adminclassUplaodForm.action";
 	}
 
 	function removeEntity(id) {
@@ -107,7 +116,7 @@
 			return;
 		}
 		$.ajax({
-			url : "pub!adminclassRemove.action",
+			url : "adminclass!adminclassRemove.action",
 			type : "post",
 			data : {
 				"pair.id" : id

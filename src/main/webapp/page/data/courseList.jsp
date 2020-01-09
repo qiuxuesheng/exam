@@ -63,7 +63,7 @@
 <script>
     function editEntity(id) {
 
-        window.location.href = "pub!courseEdit.action?pair.id="+id;
+        window.location.href = "course!courseEdit.action?pair.id="+id;
     }
 
     function removeEntity(id) {
@@ -72,7 +72,7 @@
             return;
         }
         $.ajax({
-            url : "pub!courseRemove.action",
+            url : "course!courseRemove.action",
             type : "post",
             data : {
                 "pair.id" : id

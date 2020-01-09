@@ -42,7 +42,7 @@
                                 <td>${st.index+1 }</td>
                                 <td>${adminclass.grade.name }</td>
                                 <td>${adminclass.name }</td>
-                                <td>${adminclass.order }</td>
+                                <td>${adminclass.code }</td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
                                         <button type="button" class="btn" onclick="editAdminclass('${adminclass.id}')">修改</button>
@@ -66,11 +66,11 @@
 <script>
     function editAdminclass(id) {
 
-        window.location.href = "pub!adminclassEdit.action?pair.id="+id;
+        window.location.href = "adminclass!adminclassEdit.action?pair.id="+id;
     }
     function adminclassUplaodForm(id) {
 
-        window.location.href = "pub!adminclassUplaodForm.action";
+        window.location.href = "adminclass!adminclassUplaodForm.action";
     }
 
     function removeEntity(id) {
@@ -79,7 +79,7 @@
             return;
         }
         $.ajax({
-            url : "pub!adminclassRemove.action",
+            url : "adminclass!adminclassRemove.action",
             type : "post",
             data : {
                 "pair.id" : id

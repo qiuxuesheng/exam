@@ -20,7 +20,7 @@
             <div class="card-body">
 
                 <div class="table-responsive">
-                    <form style="width: 95%" action="pub!adminclassSave.action" id="entityForm" method="post">
+                    <form style="width: 95%" action="adminclass!adminclassSave.action" id="entityForm" method="post">
                         <div class="form-group row">
                             <label for="grade" class="col-sm-2 col-form-label">年级</label>
                             <div class="col-sm-10">
@@ -34,15 +34,15 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="order" class="col-sm-2 col-form-label">班级名称</label>
+                            <label for="name" class="col-sm-2 col-form-label">班级名称</label>
                             <div class="col-sm-10">
-                                <input type="text" name="adminclass.name" value="${adminclass.name}" class="form-control" id="order" placeholder="" required>
+                                <input type="text" name="adminclass.name" value="${adminclass.name}" class="form-control" id="name" placeholder="" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">排序</label>
+                            <label for="code" class="col-sm-2 col-form-label">代码</label>
                             <div class="col-sm-10">
-                                <input type="text" name="adminclass.order" value="${adminclass.order}" class="form-control" id="inputPassword3" placeholder="" required>
+                                <input type="text" name="adminclass.code" value="${adminclass.code}" class="form-control" id="code" placeholder="" required>
                             </div>
                         </div>
 
@@ -74,14 +74,14 @@
         }
         var formData = form.serialize();
         $.ajax({
-            url : "pub!adminclassSave.action",
+            url : "adminclass!adminclassSave.action",
             type : "post",
             data : formData,
             dataType : "json",
             success : function(result) {
                 alert(result.msg)
                 if (result.status == 'success'){
-                    window.location.href = "pub!adminclassList.action";
+                    window.location.href = "adminclass!adminclassList.action";
                 }
             },
             error : function() {
