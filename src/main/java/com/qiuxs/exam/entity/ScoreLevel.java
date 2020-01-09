@@ -85,4 +85,10 @@ public class ScoreLevel extends NumberIdEntity<Integer> {
     public void setSort(int sort) {
         this.sort = sort;
     }
+
+
+    public boolean conform(double score){
+        return score>= min && score <= max;
+    }
+
 }

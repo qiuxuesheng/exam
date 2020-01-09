@@ -1,18 +1,13 @@
 package com.qiuxs.exam.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.qiuxs.base.service.impl.BaseServiceImpl;
-import com.qiuxs.exam.entity.*;
+import com.qiuxs.base.util.MyUtil;
 import com.qiuxs.base.util.Strings;
+import com.qiuxs.exam.entity.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.qiuxs.base.util.MyUtil;
+import java.util.*;
 
 @Service("scoreService")
 @Transactional
@@ -172,112 +167,93 @@ public class ScoreServiceImpl extends BaseServiceImpl implements ScoreService {
 		return (List<ExamScore>) entityDao.search(hql.toString(), params.toArray());
 	}
 
-	public List<List<Object>> getDataList(ExamBatch examBatch, Grade grade, Integer courseId){
+	public List<List<Object>> getDataList(ExamBatch examBatch, Grade grade, Integer courseId,Integer modelId){
+
 
 		List<List<Object>> rows = new ArrayList<List<Object>>();
 
-		if (examBatch !=null) {
-
-
-			List<ExamScore> scores = findPageList(examBatch.getId(),grade.getId());
-
-
-			Map<String, Double> map = new HashMap<String, Double>();
-
-			for (ExamScore score : scores) {
-				//分项成绩
-				ScoreItem scoreItem = score.getScoreItem(courseId);
-				//过滤缺考的学生
-				if (scoreItem==null||scoreItem.isMiss()){
-					continue;
-				}
-
-				double d = scoreItem.getScore();
-
-				putMapValue(map, score.getStudent().getAdminclass().getName(),"考试人数");//考试人数
-				putMapValue(map, score.getStudent().getAdminclass().getName(),"总分数",d);
-				if (d==100) {
-					putMapValue(map, score.getStudent().getAdminclass().getName(),"100");
-				}
-				if (100>=d&&d>=90) {
-					putMapValue(map, score.getStudent().getAdminclass().getName(),"90-100");
-				}
-				if (d>=80&&d<=100) {
-					putMapValue(map, score.getStudent().getAdminclass().getName(),"80-100");
-				}
-				if (d>=70&&d<=100) {
-					putMapValue(map, score.getStudent().getAdminclass().getName(),"70-100");
-				}
-				if (d>=0&&d<70) {
-					putMapValue(map, score.getStudent().getAdminclass().getName(),"70以下");
-				}
-				if (d>=90&&d<=100) {
-					putMapValue(map, score.getStudent().getAdminclass().getName(),"优秀");
-				}
-				if (d>=80&&d<=100) {
-					putMapValue(map, score.getStudent().getAdminclass().getName(),"良好");
-				}
-				if (d>=70&&d<=100) {
-					putMapValue(map, score.getStudent().getAdminclass().getName(),"及格");
-				}
-			}
-
-			List<Adminclass> adminclasses = (List<Adminclass>) entityDao.search("from Adminclass where grade.id = ? order by code desc",new Object[]{grade.getId()});
-
-			double allStd = 0.0;
-			double allStd_100 = 0.0;
-			double allStd_90_100 = 0.0;
-			double allStd_80_100 = 0.0;
-			double allStd_70_100 = 0.0;
-			double allStd_70 = 0.0;
-			double allStd_yx = 0.0;
-			double allStd_lh = 0.0;
-			double allStd_jg = 0.0;
-			double allStd_zz = 0.0;
-
-			for (Adminclass adminclass : adminclasses) {
-				String gradeName = adminclass.getName();
-				List<Object> row = new ArrayList<Object>();
-				row.add(gradeName);
-				row.add(getMapValue_Int(map,gradeName+"考试人数"));
-				allStd += getMapValue_Int(map,gradeName+"考试人数");
-				row.add(getMapValue_Int(map,gradeName+"100"));
-				allStd_100 += getMapValue_Int(map,gradeName+"100");
-				row.add(getMapValue_Int(map,gradeName+"90-100"));
-				allStd_90_100 += getMapValue_Int(map,gradeName+"90-100");
-				row.add(getMapValue_Int(map,gradeName+"80-100"));
-				allStd_80_100 += getMapValue_Int(map,gradeName+"80-100");
-				row.add(getMapValue_Int(map,gradeName+"70-100"));
-				allStd_70_100 += getMapValue_Int(map,gradeName+"70-100");
-				row.add(getMapValue_Int(map,gradeName+"70以下"));
-				allStd_70 += getMapValue_Int(map,gradeName+"70以下");
-				//优秀率
-				Double stdAll = map.get(gradeName+"考试人数");
-				row.add(MyUtil.getPercent(map.get(gradeName+"优秀"), stdAll))	;
-				allStd_yx += getMapValue_Int(map,gradeName+"优秀");
-				row.add(MyUtil.getPercent(map.get(gradeName+"良好"), stdAll))	;
-				allStd_lh += getMapValue_Int(map,gradeName+"良好");
-				row.add(MyUtil.getPercent(map.get(gradeName+"及格"), stdAll))	;
-				allStd_jg += getMapValue_Int(map,gradeName+"及格");
-				row.add(MyUtil.getPercent(map.get(gradeName+"总分数"), stdAll,false))	;
-				allStd_zz += getMapValue_Int(map,gradeName+"总分数");
-				rows.add(row);
-			}
-			Collections.reverse(rows);
-			List<Object> allRow = new ArrayList<Object>();
-			allRow.add("全年级");
-			allRow.add((int)allStd);
-			allRow.add((int)allStd_100);
-			allRow.add((int)allStd_90_100);
-			allRow.add((int)allStd_80_100);
-			allRow.add((int)allStd_70_100);
-			allRow.add((int)allStd_70);
-			allRow.add(MyUtil.getPercent(allStd_yx, allStd));
-			allRow.add(MyUtil.getPercent(allStd_lh, allStd));
-			allRow.add(MyUtil.getPercent(allStd_jg, allStd));
-			allRow.add(MyUtil.getPercent(allStd_zz, allStd,false));
-			rows.add(allRow);
+		if (examBatch ==null) {
+			return rows;
 		}
+		WordModel model = entityDao.get(WordModel.class,modelId);
+		List<ExamScore> scores = findPageList(examBatch.getId(),grade.getId());
+		List<ScoreLevel> levels = model.getLevels();
+
+		Map<String, Double> map = new HashMap<String, Double>();
+
+		//考试人数
+		String std_count_key = "std_count_key";
+		//总分数
+		String total_score_key = "score_all_key";
+
+		for (ExamScore examScore : scores) {
+			//分项成绩
+			ScoreItem scoreItem = examScore.getScoreItem(courseId);
+			//过滤缺考的学生
+			if (scoreItem==null||scoreItem.isMiss()){
+				continue;
+			}
+
+			double score = scoreItem.getScore();
+
+			putMapValue(map, examScore.getStudent().getAdminclass().getName(),std_count_key);
+			putMapValue(map, examScore.getStudent().getAdminclass().getName(),total_score_key,score);
+			for (ScoreLevel level : levels) {
+				if (level.conform(score)){
+					putMapValue(map, examScore.getStudent().getAdminclass().getName(),level.getName());
+				}
+			}
+		}
+
+		List<Adminclass> adminclasses = (List<Adminclass>) entityDao.search("from Adminclass where grade.id = ? order by code desc",new Object[]{grade.getId()});
+
+		double grade_std_all = 0.0;
+		double grade_score_all = 0.0;
+		List<Integer> grade_std_level = new ArrayList<Integer>();
+
+		for (Adminclass adminclass : adminclasses) {
+			String gradeName = adminclass.getName();
+			List<Object> row = new ArrayList<Object>();
+			//班级名称
+			row.add(gradeName);
+			// 考试人数
+			int admin_std_all = getMapValue_Int(map,gradeName+std_count_key);
+			row.add(admin_std_all);
+			grade_std_all += admin_std_all;
+
+			//各阶段信息
+			for (ScoreLevel level : levels) {
+				String key = gradeName + level.getName();
+				int admin_std_level = getMapValue_Int(map,key);
+				grade_std_all += admin_std_all;
+				grade_std_level.add(admin_std_level);
+				if (level.isPercent()){
+					row.add(MyUtil.getPercent((double) admin_std_level, (double) admin_std_all));
+				} else {
+					row.add(admin_std_level);
+				}
+			}
+			//平均分
+			row.add(MyUtil.getPercent(map.get(gradeName+total_score_key), (double) admin_std_all,false))	;
+			grade_score_all += getMapValue_Int(map,gradeName+total_score_key);
+			rows.add(row);
+		}
+
+
+		Collections.reverse(rows);
+		/*List<Object> allRow = new ArrayList<Object>();
+		allRow.add("全年级");
+		allRow.add((int)grade_std_all);
+		allRow.add((int)allStd_100);
+		allRow.add((int)allStd_90_100);
+		allRow.add((int)allStd_80_100);
+		allRow.add((int)allStd_70_100);
+		allRow.add((int)allStd_70);
+		allRow.add(MyUtil.getPercent(allStd_yx, grade_std_all));
+		allRow.add(MyUtil.getPercent(allStd_lh, grade_std_all));
+		allRow.add(MyUtil.getPercent(allStd_jg, grade_std_all));
+		allRow.add(MyUtil.getPercent(grade_score_all, grade_std_all,false));
+		rows.add(allRow);*/
 		return rows;
 
 	}

@@ -113,8 +113,7 @@ public class ScoreAction extends BaseAction {
 			ExamBatch examBatch = baseService.get(ExamBatch.class,examId);
             Course course = baseService.get(Course.class,courseId);
             Grade grade = baseService.get(Grade.class,gradeId);
-			WordModel model = baseService.get(WordModel.class,getInt("modelId"));
-			rows = scoreService.getDataList(examBatch,grade,courseId);
+			rows = scoreService.getDataList(examBatch,grade,courseId,getInt("modelId"));
 			put("examName", examBatch.getName());
 			put("subjectName", course.getName());
 
@@ -143,7 +142,7 @@ public class ScoreAction extends BaseAction {
 		ExamBatch examBatch = baseService.get(ExamBatch.class,examId);
 		Course course = baseService.get(Course.class,courseId);
         Grade grade = baseService.get(Grade.class,gradeId);
-		rows = scoreService.getDataList(examBatch, grade,courseId);
+		rows = scoreService.getDataList(examBatch, grade,courseId,null);
 		String[] titleArr = {"班级","考试人数","100分人数","90-100","80-100","70-100","70以下","优秀率","良好率","及格率","平均分"};
 
 

@@ -1,6 +1,7 @@
 package com.qiuxs.exam.entity;
 
 import com.qiuxs.base.entity.pojo.BaseCode;
+import org.hibernate.annotations.Sort;
 
 import javax.persistence.*;
 import java.util.ArrayList;

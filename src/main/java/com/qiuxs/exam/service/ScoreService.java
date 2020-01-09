@@ -24,7 +24,7 @@ public interface ScoreService extends BaseService {
 
 	public List<ExamScore> findPageList(Integer examId,Integer gradeId);
 
-	public List<List<Object>> getDataList(ExamBatch exam, Grade grade, Integer courseId);
+	public List<List<Object>> getDataList(ExamBatch exam, Grade grade, Integer courseId,Integer modelId);
 	
 	
 }
