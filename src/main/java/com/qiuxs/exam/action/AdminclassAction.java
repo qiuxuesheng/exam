@@ -37,7 +37,7 @@ public class AdminclassAction extends BaseAction {
         List<Grade> grades = baseService.getAll(Grade.class);
         put("grades",grades);
 
-        adminclass = getEntity(Adminclass.class,getInt("pair.id"));
+        adminclass = getEntity(Adminclass.class,getInt("id"));
 
         return "adminclassForm";
     }
@@ -56,7 +56,7 @@ public class AdminclassAction extends BaseAction {
 
         try {
 
-            baseService.remove(Adminclass.class,getInt("pair.id"));
+            baseService.remove(Adminclass.class,getInt("id"));
             writeSuccese("删除成功");
         } catch (Exception e) {
             writeFail(e.getMessage());
@@ -78,8 +78,9 @@ public class AdminclassAction extends BaseAction {
                 return "adminclassUplaodForm";
             }
 
-            List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName, -1, 0, 0, 0, 0) ;
-            int count =  adminclassService.uplaodAdminclass(datas,getInt("pair.gradeId"));
+            List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName) ;
+            int count =  adminclassService.uplaodAdminclass(datas,getInt("gradeId"));
+            put("gradeId",getInt("gradeId"));
             put("state", "导入成功");
             put("msg", "导入 "+count+" 个班级");
         } catch (Exception e) {

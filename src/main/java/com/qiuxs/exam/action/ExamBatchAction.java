@@ -28,7 +28,7 @@ public class ExamBatchAction extends BaseAction {
         List<Grade> grades = baseService.getAll(Grade.class);
         put("grades",grades);
 
-        examBatch = getEntity(ExamBatch.class,getInt("pair.id"));
+        examBatch = getEntity(ExamBatch.class,getInt("id"));
 
         return "examBatchForm";
     }
@@ -46,7 +46,7 @@ public class ExamBatchAction extends BaseAction {
     public void examBatchRemove(){
 
         try {
-            baseService.remove(ExamBatch.class,getInt("pair.id"));
+            baseService.remove(ExamBatch.class,getInt("id"));
             writeSuccese("删除成功");
         } catch (Exception e) {
             writeFail(e.getMessage());

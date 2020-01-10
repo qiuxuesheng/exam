@@ -25,7 +25,7 @@ public class StudentAction extends BaseAction {
     private String fileContentType;
 
     @Resource(name = "studentService")
-    protected StudentService studentService;
+    protected StudentServiceImpl studentService;
 
 
     public String studentList(){
@@ -38,7 +38,7 @@ public class StudentAction extends BaseAction {
     public String studentEdit(){
         List<Grade> grades = baseService.getAll(Grade.class);
         List<Adminclass> adminclasses = baseService.getAll(Adminclass.class);
-        Student student = baseService.get(Student.class,getInt("pair.id"));
+        Student student = baseService.get(Student.class,getInt("id"));
         put("grades",grades);
         put("adminclasses",adminclasses);
         put("student",student);
@@ -57,7 +57,7 @@ public class StudentAction extends BaseAction {
     }
     public void studentRemove(){
         try {
-            baseService.remove(Student.class,getInt("pair.id"));
+            baseService.remove(Student.class,getInt("id"));
             writeSuccese("删除成功");
         } catch (Exception e) {
             writeFail(e.getMessage());
@@ -76,8 +76,9 @@ public class StudentAction extends BaseAction {
                 return "adminclassUplaodForm";
             }
 
-            List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName, -1, 0, 0, 0, 0) ;
-            int count = studentService.uplaodStudent(datas,getInt("pair.gradeId"));
+            List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName) ;
+            int count = studentService.uplaodStudent(datas,getInt("gradeId"));
+            put("gradeId",getInt("gradeId"));
             put("state", "导入成功");
             put("msg", "导入 "+count+" 个学生");
         } catch (Exception e) {

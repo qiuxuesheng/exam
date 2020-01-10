@@ -66,10 +66,10 @@ public class ScoreAction extends BaseAction {
 		//获取扩展名
 		String ext = fileFileName.substring(fileFileName.lastIndexOf(".")+1);
 
-		Integer examId = getInt("pair.examId");
-		Integer gradeId = getInt("pair.gradeId");
+		Integer examId = getInt("examId");
+		Integer gradeId = getInt("gradeId");
 
-		List<String> courseNames = Arrays.asList(Strings.split(getString("pair.course"),","));
+		List<String> courseNames = Arrays.asList(Strings.split(getString("course"),","));
 
 		if(!"xls".equals(ext)&&!"xlsx".equals(ext)){//使用xls方式读取
 			put("state", "导入失败");
@@ -85,7 +85,7 @@ public class ScoreAction extends BaseAction {
 
 		try {
 
-			List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName, -1, 0, 0, 0, 0) ;
+			List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName) ;
 			int count = scoreService.uploadScore(datas, examId ,gradeId,courseNames);
 			put("state", "导入成功");
 			put("msg", "导入成绩条数："+count);
@@ -105,17 +105,24 @@ public class ScoreAction extends BaseAction {
 		List<Grade> grades = baseService.getAll(Grade.class);
 		List<WordModel> models = baseService.getAll(WordModel.class);
 		List<List<Object>> rows = new ArrayList<List<Object>>();
-		Integer courseId = getInt("pair.subject");
-		Integer examId = getInt("pair.examId");
-		Integer gradeId = getInt("pair.gradeId");
+		Integer courseId = getInt("courseId");
+		Integer examId = getInt("examId");
+		Integer gradeId = getInt("gradeId");
+		Integer modelId = getInt("modelId");
 
 		if(courseId!=null){
 			ExamBatch examBatch = baseService.get(ExamBatch.class,examId);
             Course course = baseService.get(Course.class,courseId);
             Grade grade = baseService.get(Grade.class,gradeId);
-			rows = scoreService.getDataList(examBatch,grade,courseId,getInt("modelId"));
+            WordModel selectedModel = baseService.get(WordModel.class,modelId);
+			rows = scoreService.getDataList(examBatch,grade,courseId,modelId);
 			put("examName", examBatch.getName());
-			put("subjectName", course.getName());
+			put("courseName", course.getName());
+			put("selectedModel",selectedModel);
+			put("courseId",courseId);
+			put("examId",examId);
+			put("gradeId",gradeId);
+			put("modelId",modelId);
 
 		}
 
@@ -130,9 +137,9 @@ public class ScoreAction extends BaseAction {
 
 
 	public void exportWord(){
-		Integer examId = getInt("pair.examId");
-		Integer courseId = getInt("pair.courseId");
-		Integer gradeId = getInt("pair.gradeId");
+		Integer examId = getInt("examId");
+		Integer courseId = getInt("courseId");
+		Integer gradeId = getInt("gradeId");
 		if(examId==null){
 			return ;
 		}

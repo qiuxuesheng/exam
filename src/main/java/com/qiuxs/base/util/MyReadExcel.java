@@ -64,10 +64,10 @@ public class MyReadExcel {
 
 	
 	/**
-	 * 自动根据文件扩展名，调用对应的读取方法
+	 * 自动根据文件扩展名，调用对应的读取方法(默认第一个sheet的全部内容)
 	 */
 	public static List<List<String>> readExcel(File srcFile,String fileName) throws IOException{
-		return readExcel(srcFile, fileName, -1, 0, 0, 0, 0);
+		return readExcel(srcFile, fileName, 1, 0, 0, 0, 0);
 	}
 	/**
 	 * 自动根据文件扩展名，调用对应的读取方法
@@ -380,15 +380,16 @@ public class MyReadExcel {
 		int sheetCount = 1;//需要操作的sheet数量
 		int sumSheetCount = wb.getNumberOfSheets();//获取可以操作的sheet总数量
 		if (sheetIndex>sumSheetCount) {
-
+			return new ArrayList<List<String>>();
 		}
 
 		Sheet sheet = null;
-		if(sheetIndex!=-1){	//只操作一个sheet
+		if(sheetIndex==-1){	//操作多个sheet
+			sheetCount = wb.getNumberOfSheets();//获取可以操作的总数量
+
+		}else{
 			// 获取设定操作的sheet(按索引值查)
 			sheet = wb.getSheetAt(sheetIndex-1);
-		}else{	//操作多个sheet
-			sheetCount = wb.getNumberOfSheets();//获取可以操作的总数量
 		}
 
 		// 获取sheet数目

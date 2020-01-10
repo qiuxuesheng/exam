@@ -35,15 +35,15 @@
 						</thead>
 						<tbody>
 
-						<s:iterator value="grades" var="level" status="st">
+						<s:iterator value="grades" var="grade" status="st">
 							<tr>
 								<td>${st.index+1 }</td>
-								<td>${level.name }</td>
-								<td>${level.code }</td>
+								<td>${grade.name }</td>
+								<td>${grade.code }</td>
 								<td>
 									<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-										<button type="button" class="btn" onclick="editGrade('${level.id}')">修改</button>
-										<button type="button" class="btn" onclick="removeEntity('${level.id}')">删除</button>
+										<button type="button" class="btn" onclick="editGrade('${grade.id}')">修改</button>
+										<button type="button" class="btn" onclick="removeEntity('${grade.id}')">删除</button>
 									</div>
 								</td>
 							</tr>
@@ -63,7 +63,7 @@
 <script>
 	function editGrade(id) {
 
-		window.location.href = "grade!gradeEdit.action?pair.id="+id;
+		window.location.href = "grade!gradeEdit.action?id="+id;
 	}
 
 	function removeEntity(id) {
@@ -75,7 +75,7 @@
 			url : "grade!gradeRemove.action",
 			type : "post",
 			data : {
-				"pair.id" : id
+				"id" : id
 			},
 			dataType : "json",
 			success : function(result) {

@@ -9,6 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+/**
+ *
+ */
 @Service("scoreService")
 @Transactional
 public class ScoreServiceImpl extends BaseServiceImpl implements ScoreService {
@@ -179,12 +182,12 @@ public class ScoreServiceImpl extends BaseServiceImpl implements ScoreService {
 		List<ExamScore> scores = findPageList(examBatch.getId(),grade.getId());
 		List<ScoreLevel> levels = model.getLevels();
 
-		Map<String, Double> map = new HashMap<String, Double>();
+		Map<String, Double> adminDataMap = new HashMap<String, Double>();
 
 		//考试人数
-		String std_count_key = "std_count_key";
+		String admin_std_count_key = "std_count_key";
 		//总分数
-		String total_score_key = "score_all_key";
+		String admin_total_score_key = "score_all_key";
 
 		for (ExamScore examScore : scores) {
 			//分项成绩
@@ -196,37 +199,41 @@ public class ScoreServiceImpl extends BaseServiceImpl implements ScoreService {
 
 			double score = scoreItem.getScore();
 
-			putMapValue(map, examScore.getStudent().getAdminclass().getName(),std_count_key);
-			putMapValue(map, examScore.getStudent().getAdminclass().getName(),total_score_key,score);
+			addMapValue(adminDataMap, examScore.getStudent().getAdminclass().getName()+admin_std_count_key);
+			addMapValue(adminDataMap, examScore.getStudent().getAdminclass().getName()+admin_total_score_key,score);
 			for (ScoreLevel level : levels) {
 				if (level.conform(score)){
-					putMapValue(map, examScore.getStudent().getAdminclass().getName(),level.getName());
+					addMapValue(adminDataMap, examScore.getStudent().getAdminclass().getName()+level.getName());
 				}
 			}
 		}
 
 		List<Adminclass> adminclasses = (List<Adminclass>) entityDao.search("from Adminclass where grade.id = ? order by code desc",new Object[]{grade.getId()});
 
-		double grade_std_all = 0.0;
-		double grade_score_all = 0.0;
-		List<Integer> grade_std_level = new ArrayList<Integer>();
+		String grade_std_all_key =  "_std_all";
+		String grade_score_all_key = "_score_all";
+		Map<String,Double> gradeDataMap = new HashMap<String, Double>();
+		gradeDataMap.put(grade_std_all_key,0D);
+		gradeDataMap.put(grade_score_all_key,0D);
+		for (ScoreLevel level : levels) {
+			gradeDataMap.put(level.getName(),0D);
+		}
 
 		for (Adminclass adminclass : adminclasses) {
-			String gradeName = adminclass.getName();
+			String adminclassName = adminclass.getName();
 			List<Object> row = new ArrayList<Object>();
 			//班级名称
-			row.add(gradeName);
+			row.add(adminclassName);
 			// 考试人数
-			int admin_std_all = getMapValue_Int(map,gradeName+std_count_key);
+			int admin_std_all = getMapValue_Int(adminDataMap,adminclassName + admin_std_count_key);
 			row.add(admin_std_all);
-			grade_std_all += admin_std_all;
+			addMapValue(gradeDataMap,grade_std_all_key,admin_std_all);
 
 			//各阶段信息
 			for (ScoreLevel level : levels) {
-				String key = gradeName + level.getName();
-				int admin_std_level = getMapValue_Int(map,key);
-				grade_std_all += admin_std_all;
-				grade_std_level.add(admin_std_level);
+				String key = adminclassName + level.getName();
+				int admin_std_level = getMapValue_Int(adminDataMap,key);
+				addMapValue(gradeDataMap,level.getName(),admin_std_level);
 				if (level.isPercent()){
 					row.add(MyUtil.getPercent((double) admin_std_level, (double) admin_std_all));
 				} else {
@@ -234,39 +241,45 @@ public class ScoreServiceImpl extends BaseServiceImpl implements ScoreService {
 				}
 			}
 			//平均分
-			row.add(MyUtil.getPercent(map.get(gradeName+total_score_key), (double) admin_std_all,false))	;
-			grade_score_all += getMapValue_Int(map,gradeName+total_score_key);
+			double admin_score_all = adminDataMap.get(adminclassName + admin_total_score_key);
+			row.add(MyUtil.getPercent(admin_score_all, (double) admin_std_all,false));
+			addMapValue(gradeDataMap,grade_score_all_key,admin_score_all);
 			rows.add(row);
 		}
 
 
 		Collections.reverse(rows);
-		/*List<Object> allRow = new ArrayList<Object>();
-		allRow.add("全年级");
-		allRow.add((int)grade_std_all);
-		allRow.add((int)allStd_100);
-		allRow.add((int)allStd_90_100);
-		allRow.add((int)allStd_80_100);
-		allRow.add((int)allStd_70_100);
-		allRow.add((int)allStd_70);
-		allRow.add(MyUtil.getPercent(allStd_yx, grade_std_all));
-		allRow.add(MyUtil.getPercent(allStd_lh, grade_std_all));
-		allRow.add(MyUtil.getPercent(allStd_jg, grade_std_all));
-		allRow.add(MyUtil.getPercent(grade_score_all, grade_std_all,false));
-		rows.add(allRow);*/
+		List<Object> allRow = new ArrayList<Object>();
+
+		List<Object> row = new ArrayList<Object>();
+		row.add("全年级");
+		Double gradeStdCount = gradeDataMap.get(grade_std_all_key);
+		row.add(gradeStdCount);
+		for (ScoreLevel level : levels) {
+			if (level.isPercent()){
+
+				row.add(MyUtil.getPercent(gradeDataMap.get(level.getName()), gradeStdCount));
+			} else {
+				row.add(gradeDataMap.get(level.getName()));
+			}
+		}
+		row.add(MyUtil.getPercent(gradeDataMap.get(grade_score_all_key),gradeStdCount,false));
+		rows.add(row);
+		rows.add(allRow);
 		return rows;
 
 	}
 
 
-	private void putMapValue(Map<String, Double> map, String scoreName,String typeName) {
-		putMapValue(map, scoreName, typeName, 1);
+	private void addMapValue(Map<String, Double> map, String key) {
+		addMapValue(map, key, 1);
 	}
-	private void putMapValue(Map<String, Double> map, String scoreName,String typeName,double d) {
-		if (map.containsKey(scoreName+typeName)) {
-			map.put(scoreName+typeName, map.get(scoreName+typeName)+d);
+
+	private void addMapValue(Map<String, Double> map, String key, double d) {
+		if (map.containsKey(key)) {
+			map.put(key, map.get(key)+d);
 		}else{
-			map.put(scoreName+typeName, d);
+			map.put(key, d);
 		}
 	}
 

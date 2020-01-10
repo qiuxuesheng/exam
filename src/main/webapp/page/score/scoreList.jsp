@@ -11,7 +11,7 @@
 	<!-- Page Header-->
 	<header class="page-header">
 		<div class="container-fluid">
-			<h3 class="no-margin-bottom">数据维护 / 班级维护</h3>
+			<h3 class="no-margin-bottom"> 成绩查询 </h3>
 		</div>
 	</header>
 	<!-- Breadcrumb-->
@@ -65,7 +65,7 @@
 <script>
 	function editAdminclass(id) {
 
-		window.location.href = "adminclass!adminclassEdit.action?pair.id="+id;
+		window.location.href = "adminclass!adminclassEdit.action?id="+id;
 	}
 	function adminclassUplaodForm(id) {
 
@@ -81,7 +81,7 @@
 			url : "adminclass!adminclassRemove.action",
 			type : "post",
 			data : {
-				"pair.id" : id
+				"id" : id
 			},
 			dataType : "json",
 			success : function(result) {

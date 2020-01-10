@@ -11,7 +11,7 @@
 	<!-- Page Header-->
 	<header class="page-header">
 		<div class="container-fluid">
-			<h3 class="no-margin-bottom">数据维护 / 班级维护</h3>
+			<h3 class="no-margin-bottom"> 成绩分析 </h3>
 		</div>
 	</header>
 	<!-- Breadcrumb-->
@@ -24,29 +24,29 @@
 					<form class="form-inline" role="form" action="score!analysisIndex.action">
 						<div class="form-group">
 							<label for="examBatch">选择考次</label>
-							<select class="form-control" id="examBatch" name="pair.examId" required>
+							<select class="form-control" id="examBatch" name="examId" required>
 								<option value="">...</option>
 								<s:iterator value="examBatchs">
-									<option value="${id}" <s:if test="pair.examId==id">selected="selected"</s:if>>${name }</option>
+									<option value="${id}" <s:if test="#examId==id">selected="selected"</s:if>>${name }</option>
 								</s:iterator>
 							</select>
 						</div>
 						<div class="form-group">
 							<label for="grade">年级</label>
-							<select class="form-control" id="grade" name="pair.gradeId" required>
+							<select class="form-control" id="grade" name="gradeId" required>
 								<option value="">...</option>
 								<s:iterator value="grades">
-									<option value="${id}" <s:if test="pair.gradeId==id">selected="selected"</s:if>>${name }</option>
+									<option value="${id}" <s:if test="#gradeId==id">selected="selected"</s:if>>${name }</option>
 								</s:iterator>
 							</select>
 						</div>
 
 						<div class="form-group">
-							<label for="subject">选择科目</label>
-							<select class="form-control" id="subject"  name="pair.subject" required>
+							<label for="courseId">选择科目</label>
+							<select class="form-control" id="courseId"  name="courseId" required>
 								<option value="">...</option>
 								<s:iterator value="courses" var="course">
-									<option value="${course.id}"<s:if test="pair.subject==#course.id">selected="selected"</s:if>>${course.name}</option>
+									<option value="${course.id}"<s:if test="#courseId==#course.id">selected="selected"</s:if>>${course.name}</option>
 								</s:iterator>
 							</select>
 						</div>
@@ -54,28 +54,24 @@
 							<label for="model">选择模板</label>
 							<select class="form-control" id="model"  name="modelId" required>
 								<option value="">...</option>
-								<s:iterator value="models" var="model">
-									<option value="${model.id}"<s:if test="modelId==#model.id">selected="selected"</s:if>>${model.name}</option>
+								<s:iterator value="models">
+									<option value="${id}"<s:if test="#modelId==id">selected="selected"</s:if>>${name}</option>
 								</s:iterator>
 							</select>
 						</div>
 						<button type="submit" class="btn btn-default">统计</button>
 						<input type="button" onclick="exportWord()" value="下载">
 					</form>
-					<h3 class="text-center">${pair.examName }${pair.subjectName }成绩分析</h3>
+					<h3 class="text-center">${examName }${courseName }成绩分析</h3>
 					<table class="table table-bordered">
 						<thead>
 						<tr>
 							<th>班级</th>
 							<th>考试人数</th>
-							<th>100分人数</th>
-							<th>90-100</th>
-							<th>80-100</th>
-							<th>70-100</th>
-							<th>70以下</th>
-							<th>优秀率</th>
-							<th>良好率</th>
-							<th>及格率</th>
+							<s:iterator value="#selectedModel.levels">
+								<th>${name}</th>
+							</s:iterator>
+
 							<th>平均分</th>
 						</tr>
 						</thead>
@@ -103,7 +99,7 @@
 <script>
 	function editAdminclass(id) {
 
-		window.location.href = "adminclass!adminclassEdit.action?pair.id="+id;
+		window.location.href = "adminclass!adminclassEdit.action?id="+id;
 	}
 	function adminclassUplaodForm(id) {
 
@@ -119,7 +115,7 @@
 			url : "adminclass!adminclassRemove.action",
 			type : "post",
 			data : {
-				"pair.id" : id
+				"id" : id
 			},
 			dataType : "json",
 			success : function(result) {
