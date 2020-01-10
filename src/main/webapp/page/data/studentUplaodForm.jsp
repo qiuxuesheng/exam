@@ -25,10 +25,10 @@
                             <label for="grade" class="col-sm-2 col-form-label">所属年级</label>
                             <div class="col-sm-10">
 
-                                <select name="pair.gradeId" class="form-control" id="grade" required>
+                                <select name="gradeId" class="form-control" id="grade" required>
                                     <option value="">...</option>
-                                    <s:iterator value="grades" var="level">
-                                        <option value="${level.id }" <s:if test="pair.gradeId==id">selected="selected"</s:if> >${level.name }</option>
+                                    <s:iterator value="grades" var="grade">
+                                        <option value="${grade.id }" <s:if test="#gradeId==id">selected="selected"</s:if> >${grade.name }</option>
                                     </s:iterator>
                                 </select>
 

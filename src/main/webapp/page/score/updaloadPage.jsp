@@ -25,9 +25,9 @@
 							<label for="examBatch" class="col-sm-2 col-form-label">考试批次</label>
 							<div class="col-sm-10">
 
-								<select name="pair.examId" class="form-control" id="examBatch" required>
+								<select name="examId" class="form-control" id="examBatch" required>
 									<s:iterator value="examBatchs" var="examBatch">
-										<option value="${examBatch.id }" <s:if test="pair.examId==id">selected="selected"</s:if> >${examBatch.name }</option>
+										<option value="${examBatch.id }" <s:if test="examId==id">selected="selected"</s:if> >${examBatch.name }</option>
 									</s:iterator>
 								</select>
 
@@ -37,10 +37,10 @@
 						<div class="form-group row">
 							<label for="grade" class="col-sm-2 col-form-label">年级</label>
 							<div class="col-sm-10">
-								<select name="pair.gradeId" class="form-control" id="grade" required>
+								<select name="gradeId" class="form-control" id="grade" required>
 									<option value="">...</option>
-									<s:iterator value="grades" var="level" status="st">
-										<option <s:if test="%{pair.gradeId == #grade.id}">selected="selected"</s:if> value="${level.id}">${level.name}</option>
+									<s:iterator value="grades" var="grade" status="st">
+										<option <s:if test="%{gradeId == #grade.id}">selected="selected"</s:if> value="${grade.id}">${grade.name}</option>
 									</s:iterator>
 
 								</select>
@@ -52,7 +52,7 @@
 							<div class="col-sm-10">
 								<s:iterator value="courses" var="course" status="st">
 									<div class="form-check form-check-inline">
-										<input name="pair.course" class="form-check-input" type="checkbox" id="${course.id}" value="${course.name}">
+										<input name="course" class="form-check-input" type="checkbox" id="${course.id}" value="${course.name}">
 										<label class="form-check-label" for="${course.id}">${course.name}</label>
 									</div>
 								</s:iterator>

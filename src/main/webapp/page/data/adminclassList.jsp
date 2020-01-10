@@ -66,7 +66,7 @@
 <script>
     function editAdminclass(id) {
 
-        window.location.href = "adminclass!adminclassEdit.action?pair.id="+id;
+        window.location.href = "adminclass!adminclassEdit.action?id="+id;
     }
     function adminclassUplaodForm(id) {
 
@@ -82,7 +82,7 @@
             url : "adminclass!adminclassRemove.action",
             type : "post",
             data : {
-                "pair.id" : id
+                "id" : id
             },
             dataType : "json",
             success : function(result) {

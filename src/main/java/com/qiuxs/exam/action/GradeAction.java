@@ -23,7 +23,7 @@ public class GradeAction extends BaseAction {
     }
 
     public String gradeEdit(){
-        Grade grade = getEntity(Grade.class,getInt("pair.id"));
+        Grade grade = getEntity(Grade.class,getInt("id"));
         put("grade",grade);
         return "gradeForm";
     }
@@ -42,7 +42,7 @@ public class GradeAction extends BaseAction {
 
         try {
 
-            baseService.remove(getGrade().getClass(),getInt("pair.id"));
+            baseService.remove(getGrade().getClass(),getInt("id"));
             writeSuccese("删除成功");
 
         } catch (Exception e) {

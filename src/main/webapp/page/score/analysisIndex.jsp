@@ -24,29 +24,29 @@
 					<form class="form-inline" role="form" action="score!analysisIndex.action">
 						<div class="form-group">
 							<label for="examBatch">选择考次</label>
-							<select class="form-control" id="examBatch" name="pair.examId" required>
+							<select class="form-control" id="examBatch" name="examId" required>
 								<option value="">...</option>
 								<s:iterator value="examBatchs">
-									<option value="${id}" <s:if test="pair.examId==id">selected="selected"</s:if>>${name }</option>
+									<option value="${id}" <s:if test="examId==id">selected="selected"</s:if>>${name }</option>
 								</s:iterator>
 							</select>
 						</div>
 						<div class="form-group">
 							<label for="grade">年级</label>
-							<select class="form-control" id="grade" name="pair.gradeId" required>
+							<select class="form-control" id="grade" name="gradeId" required>
 								<option value="">...</option>
 								<s:iterator value="grades">
-									<option value="${id}" <s:if test="pair.gradeId==id">selected="selected"</s:if>>${name }</option>
+									<option value="${id}" <s:if test="gradeId==id">selected="selected"</s:if>>${name }</option>
 								</s:iterator>
 							</select>
 						</div>
 
 						<div class="form-group">
 							<label for="subject">选择科目</label>
-							<select class="form-control" id="subject"  name="pair.subject" required>
+							<select class="form-control" id="subject"  name="subject" required>
 								<option value="">...</option>
 								<s:iterator value="courses" var="course">
-									<option value="${course.id}"<s:if test="pair.subject==#course.id">selected="selected"</s:if>>${course.name}</option>
+									<option value="${course.id}"<s:if test="subject==#course.id">selected="selected"</s:if>>${course.name}</option>
 								</s:iterator>
 							</select>
 						</div>
@@ -62,7 +62,7 @@
 						<button type="submit" class="btn btn-default">统计</button>
 						<input type="button" onclick="exportWord()" value="下载">
 					</form>
-					<h3 class="text-center">${pair.examName }${pair.subjectName }成绩分析</h3>
+					<h3 class="text-center">${examName }${subjectName }成绩分析</h3>
 					<table class="table table-bordered">
 						<thead>
 						<tr>
@@ -103,7 +103,7 @@
 <script>
 	function editAdminclass(id) {
 
-		window.location.href = "adminclass!adminclassEdit.action?pair.id="+id;
+		window.location.href = "adminclass!adminclassEdit.action?id="+id;
 	}
 	function adminclassUplaodForm(id) {
 
@@ -119,7 +119,7 @@
 			url : "adminclass!adminclassRemove.action",
 			type : "post",
 			data : {
-				"pair.id" : id
+				"id" : id
 			},
 			dataType : "json",
 			success : function(result) {

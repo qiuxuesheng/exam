@@ -21,7 +21,7 @@ public class CourseAction extends BaseAction {
     }
 
     public String courseEdit(){
-        Course course = getEntity(Course.class,getInt("pair.id"));
+        Course course = getEntity(Course.class,getInt("id"));
         put("course",course);
         return "courseForm";
     }
@@ -38,7 +38,7 @@ public class CourseAction extends BaseAction {
     public void courseRemove(){
 
         try {
-            baseService.remove(Course.class,getInt("pair.id"));
+            baseService.remove(Course.class,getInt("id"));
             writeSuccese("删除成功");
         } catch (Exception e) {
             writeFail(e.getMessage());

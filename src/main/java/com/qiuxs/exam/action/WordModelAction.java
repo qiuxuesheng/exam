@@ -25,7 +25,7 @@ public class WordModelAction extends BaseAction {
     }
     public String modelEdit(){
 
-        WordModel model = getEntity(WordModel.class,getInt("pair.id"));
+        WordModel model = getEntity(WordModel.class,getInt("id"));
 
         put("model",model);
 
@@ -72,7 +72,7 @@ public class WordModelAction extends BaseAction {
     public void modelRemove(){
 
         try {
-            baseService.remove(WordModel.class,getInt("pair.id"));
+            baseService.remove(WordModel.class,getInt("id"));
             writeSuccese("删除成功");
         } catch (Exception e) {
             writeFail(e.getMessage());

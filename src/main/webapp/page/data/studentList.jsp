@@ -66,7 +66,7 @@
 <script>
     function editEntity(id) {
 
-        window.location.href = "student!studentEdit.action?pair.id="+id;
+        window.location.href = "student!studentEdit.action?id="+id;
     }
 
     function studentUplaodForm() {
@@ -83,7 +83,7 @@
             url : "student!studentRemove.action",
             type : "post",
             data : {
-                "pair.id" : id
+                "id" : id
             },
             dataType : "json",
             success : function(result) {
