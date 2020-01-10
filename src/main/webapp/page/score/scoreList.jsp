@@ -11,7 +11,7 @@
 	<!-- Page Header-->
 	<header class="page-header">
 		<div class="container-fluid">
-			<h3 class="no-margin-bottom">数据维护 / 班级维护</h3>
+			<h3 class="no-margin-bottom"> 成绩查询 </h3>
 		</div>
 	</header>
 	<!-- Breadcrumb-->

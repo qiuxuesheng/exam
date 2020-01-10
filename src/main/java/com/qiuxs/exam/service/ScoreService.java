@@ -13,18 +13,18 @@ public interface ScoreService extends BaseService {
 	 * 上传分数
 	 * @param datas
 	 */
-	public int uploadScore(List<List<String>> datas,Integer examBatchId,Integer gradeId,List<String> courseNames);
+	int uploadScore(List<List<String>> datas,Integer examBatchId,Integer gradeId,List<String> courseNames);
 
 	/**
 	 * 查询成绩
 	 * 
 	 * @return
 	 */
-	public List<ExamScore> findPageList();
+	List<ExamScore> findPageList();
 
-	public List<ExamScore> findPageList(Integer examId,Integer gradeId);
+	List<ExamScore> findPageList(Integer examId,Integer gradeId);
 
-	public List<List<Object>> getDataList(ExamBatch exam, Grade grade, Integer courseId,Integer modelId);
+	List<List<Object>> getDataList(ExamBatch exam, Grade grade, Integer courseId,Integer modelId);
 	
 	
 }
