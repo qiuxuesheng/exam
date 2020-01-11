@@ -12,20 +12,18 @@ public class MyUtil {
 		return uuidStr.replace("-", "");
 	}
 	
-	public static String getPercent(Double sub,Double sum){
+	public static String getPercent(double sub,double sum){
 		
 		return getPercent(sub, sum,true);
 		
 	}
-	public static String getPercent(Double sub,Double sum,Boolean b){
+	public static String getPercent(double sub,double sum,boolean b){
 		
 		NumberFormat numberFormat = NumberFormat.getInstance();
 		
 		// 设置精确到小数点后2位
-		sub = sub==null?0:sub; 
-		sum = sum==null?0:sum;
-		if (sum == 0 ){
-			return "0.00%";
+		if (sub==0 || sum == 0 ){
+			return b?"0.00%":"0";
 		}
 		numberFormat.setMaximumFractionDigits(2);
 		

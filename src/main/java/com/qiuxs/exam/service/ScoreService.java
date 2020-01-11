@@ -225,14 +225,14 @@ public class ScoreService extends BaseServiceImpl {
 			//班级名称
 			adminclassRow.add(adminclassName);
 			// 考试人数
-			int admin_std_all = getMapValue_Int(adminDataMap,adminclassName + admin_std_count_key);
+			int admin_std_all = getIntValue(adminDataMap,adminclassName + admin_std_count_key);
 			adminclassRow.add(admin_std_all);
 			addMapValue(gradeDataMap,grade_std_all_key,admin_std_all);
 
 			//各阶段信息
 			for (ScoreLevel level : levels) {
 				String key = adminclassName + level.getName();
-				int admin_std_level = getMapValue_Int(adminDataMap,key);
+				int admin_std_level = getIntValue(adminDataMap,key);
 				addMapValue(gradeDataMap,level.getName(),admin_std_level);
 				if (level.isPercent()){
 					adminclassRow.add(MyUtil.getPercent((double) admin_std_level, (double) admin_std_all));
@@ -241,7 +241,7 @@ public class ScoreService extends BaseServiceImpl {
 				}
 			}
 			//平均分
-			double admin_score_all = adminDataMap.get(adminclassName + admin_total_score_key);
+			double admin_score_all = getDoubleValue(adminDataMap,adminclassName + admin_total_score_key);
 			adminclassRow.add(MyUtil.getPercent(admin_score_all, (double) admin_std_all,false));
 			addMapValue(gradeDataMap,grade_score_all_key,admin_score_all);
 			rows.add(adminclassRow);
@@ -252,17 +252,16 @@ public class ScoreService extends BaseServiceImpl {
 
 		List<Object> gradeRow = new ArrayList<Object>();
 		gradeRow.add("全年级");
-		int gradeStdCount = getMapValue_Int(gradeDataMap,grade_std_all_key);
+		int gradeStdCount = getIntValue(gradeDataMap,grade_std_all_key);
 		gradeRow.add(gradeStdCount);
 		for (ScoreLevel level : levels) {
 			if (level.isPercent()){
-
-				gradeRow.add(MyUtil.getPercent(gradeDataMap.get(level.getName()), (double) gradeStdCount));
+				gradeRow.add(MyUtil.getPercent(getDoubleValue(gradeDataMap,level.getName()), (double) gradeStdCount));
 			} else {
-				gradeRow.add(getMapValue_Int(gradeDataMap,level.getName()));
+				gradeRow.add(getIntValue(gradeDataMap,level.getName()));
 			}
 		}
-		gradeRow.add(MyUtil.getPercent(gradeDataMap.get(grade_score_all_key), (double) gradeStdCount,false));
+		gradeRow.add(MyUtil.getPercent(getDoubleValue(gradeDataMap,grade_score_all_key), (double) gradeStdCount,false));
 		rows.add(gradeRow);
 		return rows;
 
@@ -284,15 +283,23 @@ public class ScoreService extends BaseServiceImpl {
 
 
 
-	public int getMapValue_Int(Map<String, Double> map ,String key){
+	public int getIntValue(Map<String, Double> map , String key){
 
 		int result = 0;
-		if (map!=null) {
-			try {
-				double d = map.get(key);
-				result = (int)d;
-			} catch (Exception e) {
-			}
+		try {
+			double d = map.get(key);
+			result = (int)d;
+		} catch (Exception e) {
+		}
+		return result;
+	}
+
+	public double getDoubleValue(Map<String, Double> map , String key){
+
+		double result = 0;
+		try {
+			result = map.get(key);
+		} catch (Exception e) {
 		}
 		return result;
 	}
