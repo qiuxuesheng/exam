@@ -1,23 +1,11 @@
 package com.qiuxs.exam.action;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
 import com.qiuxs.base.action.BaseAction;
-import com.qiuxs.exam.entity.*;
+import com.qiuxs.base.util.MyReadExcel;
 import com.qiuxs.base.util.Strings;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import com.qiuxs.exam.entity.*;
+import com.qiuxs.exam.service.ScoreService;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -25,8 +13,13 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import com.qiuxs.exam.service.ScoreService;
-import com.qiuxs.base.util.MyReadExcel;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 @Controller
 @Scope("prototype")
@@ -140,18 +133,22 @@ public class ScoreAction extends BaseAction {
 		Integer examId = getInt("examId");
 		Integer courseId = getInt("courseId");
 		Integer gradeId = getInt("gradeId");
-		if(examId==null){
-			return ;
-		}
-		if(courseId==null){
+		Integer modelId = getInt("modelId");
+		if(examId==null||courseId==null||gradeId==null||modelId==null){
 			return ;
 		}
 		ExamBatch examBatch = baseService.get(ExamBatch.class,examId);
 		Course course = baseService.get(Course.class,courseId);
         Grade grade = baseService.get(Grade.class,gradeId);
-		rows = scoreService.getDataList(examBatch, grade,courseId,null);
-		String[] titleArr = {"班级","考试人数","100分人数","90-100","80-100","70-100","70以下","优秀率","良好率","及格率","平均分"};
-
+        WordModel model = baseService.get(WordModel.class,modelId);
+		rows = scoreService.getDataList(examBatch, grade,courseId,modelId);
+		List<String> titles = new ArrayList<String>();
+		titles.add("班级");
+		titles.add("考试人数");
+		for (ScoreLevel level : model.getLevels()) {
+			titles.add(level.getName());
+		}
+		titles.add("平均分");
 
 		HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
 		//2.创建工作簿
@@ -162,13 +159,13 @@ public class ScoreAction extends BaseAction {
 		String titleValue = examBatch.getName()+course.getName()+"成绩分析";
 		Map<Integer, String> params = new HashMap<Integer, String>();
 		params.put(1, titleValue);
-		createRow(sheet, rowIndex++, titleArr.length, params, getTitleStyle(hssfWorkbook));
+		createRow(sheet, rowIndex++, titles.size(), params, getTitleStyle(hssfWorkbook));
 
 		params = new HashMap<Integer, String>();
-		for (int i=0; i< titleArr.length ; i++) {
-			params.put(i+1, titleArr[i]);
+		for (int i=0; i< titles.size() ; i++) {
+			params.put(i+1, titles.get(i));
 		}
-		createRow(sheet, rowIndex++, titleArr.length, params, getCellStyle(hssfWorkbook));
+		createRow(sheet, rowIndex++, titles.size(), params, getCellStyle(hssfWorkbook));
 		//4.遍历数据,创建数据行
 		for (List<Object> row : rows) {
 			params = new HashMap<Integer, String>();
@@ -176,25 +173,22 @@ public class ScoreAction extends BaseAction {
 			for (Object object : row) {
 				params.put(i++, object.toString());
 			}
-			createRow(sheet, rowIndex++, titleArr.length, params, getCellStyle(hssfWorkbook));
+			createRow(sheet, rowIndex++, titles.size(), params, getCellStyle(hssfWorkbook));
 		}
 		//总结
 		params = new HashMap<Integer, String>();
-		List<Object> list = rows.get(rows.size()-1);
-		params.put(1, "全年级90-100人数"+list.get(3)+"人，80-100人数"+list.get(4)
-				+"人，70-100人数"+list.get(5)+"人，70分以下人数"+list.get(6)
-				+"人。总平均分："+list.get(10)+"分（没参加考试人数不计本次成绩分析）。");
-		createRow(sheet, rowIndex++, titleArr.length, params, getStyle(hssfWorkbook, 12));
-		createRow(sheet, rowIndex++, titleArr.length, new HashMap<Integer, String>(), getStyle(hssfWorkbook, 12));
+		params.put(1, "没参加考试人数不计本次成绩分析。");
+		createRow(sheet, rowIndex++, titles.size(), params, getStyle(hssfWorkbook, 12));
+		createRow(sheet, rowIndex++, titles.size(), new HashMap<Integer, String>(), getStyle(hssfWorkbook, 12));
 		//列宽
-		for (int i = 0; i < titleArr.length; i++) {
+		for (int i = 0; i < titles.size(); i++) {
 			sheet.setColumnWidth(i, 3766);
 		}
 
 		//合并单元格
-		CellRangeAddress titleRegion = new CellRangeAddress(0, 0, 0, titleArr.length-1);
+		CellRangeAddress titleRegion = new CellRangeAddress(0, 0, 0, titles.size()-1);
 		sheet.addMergedRegion(titleRegion);
-		titleRegion = new CellRangeAddress(rowIndex-3, rowIndex-2, 0, titleArr.length-1);
+		titleRegion = new CellRangeAddress(rowIndex-3, rowIndex-2, 0, titles.size()-1);
 		sheet.addMergedRegion(titleRegion);
 
 

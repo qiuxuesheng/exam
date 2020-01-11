@@ -21,7 +21,7 @@
 			<div class="card-body">
 
 				<div class="table-responsive">
-					<form class="form-inline" role="form" action="score!analysisIndex.action">
+					<form id="exportWordForm" class="form-inline" role="form" action="score!analysisIndex.action">
 						<div class="form-group">
 							<label for="examBatch">选择考次</label>
 							<select class="form-control" id="examBatch" name="examId" required>
@@ -59,10 +59,10 @@
 								</s:iterator>
 							</select>
 						</div>
-						<button type="submit" class="btn btn-default">统计</button>
-						<input type="button" onclick="exportWord()" value="下载">
+						<button style="margin-left: 20px" type="submit" class="btn btn-default">统计</button>
+						<input style="margin-left: 20px" type="button" class="btn btn-default" onclick="exportWord()" value="下载">
 					</form>
-					<h3 class="text-center">${examName }${courseName }成绩分析</h3>
+					<h3 style="margin-top: 20px" class="text-center">${examName }${courseName }成绩分析</h3>
 					<table class="table table-bordered">
 						<thead>
 						<tr>
@@ -97,36 +97,32 @@
 </html>
 
 <script>
-	function editAdminclass(id) {
-
-		window.location.href = "adminclass!adminclassEdit.action?id="+id;
-	}
-	function adminclassUplaodForm(id) {
-
-		window.location.href = "adminclass!adminclassUplaodForm.action";
-	}
-
-	function removeEntity(id) {
-
-		if(!confirm("确定删除？")){
+	function exportWord() {
+		var form = $("#exportWordForm");
+		var validity = form[0].checkValidity();
+		if (!validity){
+			form.addClass("was-validated");
 			return;
 		}
-		$.ajax({
-			url : "adminclass!adminclassRemove.action",
+		var params = form.serialize();
+
+		window.location.href = "score!exportWord.action?"+params;
+
+		/*$.ajax({
+			url : "model!exportWord.action",
 			type : "post",
-			data : {
-				"id" : id
-			},
+			data : formData,
 			dataType : "json",
 			success : function(result) {
 				alert(result.msg)
-				window.location.reload()
+				if (result.status == 'success'){
 
+				}
 			},
 			error : function() {
 				alert("未知错误，请联系仇学胜")
 			}
-		});
+		});*/
 	}
 
 </script>

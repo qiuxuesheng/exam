@@ -5,7 +5,6 @@ import com.qiuxs.base.util.MyReadExcel;
 import com.qiuxs.exam.entity.Adminclass;
 import com.qiuxs.exam.entity.Grade;
 import com.qiuxs.exam.service.AdminclassService;
-import com.qiuxs.exam.service.AdminclassServiceImpl;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 

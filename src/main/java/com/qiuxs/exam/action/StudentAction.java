@@ -6,7 +6,6 @@ import com.qiuxs.exam.entity.Adminclass;
 import com.qiuxs.exam.entity.Grade;
 import com.qiuxs.exam.entity.Student;
 import com.qiuxs.exam.service.StudentService;
-import com.qiuxs.exam.service.StudentServiceImpl;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -25,7 +24,7 @@ public class StudentAction extends BaseAction {
     private String fileContentType;
 
     @Resource(name = "studentService")
-    protected StudentServiceImpl studentService;
+    protected StudentService studentService;
 
 
     public String studentList(){

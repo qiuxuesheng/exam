@@ -81,7 +81,7 @@
         <nav class="side-navbar">
             <!-- Sidebar Header-->
             <div class="sidebar-header d-flex align-items-center">
-                <div class="avatar"><img src="img/avatar-1.jpg" alt="..." class="img-fluid rounded-circle"></div>
+                <div class="avatar" style="width: 70px;height: 70px"><img src="img/avatar-1.jpg" alt="..." class="img-fluid rounded-circle"></div>
                 <div class="title">
                     <h1 class="h4">Qiuxs</h1>
                     <p>123</p>
@@ -89,7 +89,6 @@
             </div>
             <div id="menuDiv">
                 <ul  class="list-unstyled">
-
                     <li ><a href="main.action"  target="mainFrame"> <i class="icon-home"></i> 后台首页 </a></li>
                     <li><a href="score!updaloadPage.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩上传 </a></li>
                     <li><a href="score!scoreList.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩查询 </a></li>
@@ -104,6 +103,7 @@
                             <li><a href="model!modelList.action" target="mainFrame">等级线维护</a></li>
                         </ul>
                     </li>
+                </ul>
             </div>
         </nav>
         <div class="content-inner" align="center">
