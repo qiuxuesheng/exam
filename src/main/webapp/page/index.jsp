@@ -4,7 +4,6 @@
 <html>
 <%@include file="/page/basePage.jsp"%>
 <head>
-    <script src="js/charts-home.js"></script>
 </head>
 <body>
 <div class="page">
@@ -33,41 +32,15 @@
                         <li class="nav-item d-flex align-items-center"><a id="search" href="javascript:void(0)"><i class="icon-search"></i></a></li>
                         <!-- Notifications-->
                         <li class="nav-item dropdown"> <a id="notifications" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><i class="fa fa-bell-o"></i><span class="badge bg-red badge-corner"></span></a>
-                            <ul aria-labelledby="notifications" class="dropdown-menu">
-                                <li><a rel="nofollow" href="#" class="dropdown-item">
-                                    <div class="notification">
-                                        <div class="notification-content"><i class="fa fa-envelope bg-green"></i>You have 6 new messages </div>
-                                        <div class="notification-time"><small>4 minutes ago</small></div>
-                                    </div></a></li>
-                            </ul>
+
                         </li>
                         <!-- Messages                        -->
                         <li class="nav-item dropdown"> <a id="messages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><i class="fa fa-envelope-o"></i><span class="badge bg-orange badge-corner"></span></a>
-                            <ul aria-labelledby="notifications" class="dropdown-menu">
-                                <li><a rel="nofollow" href="#" class="dropdown-item d-flex">
-                                    <div class="msg-profile"> <img src="img/avatar-1.jpg" alt="..." class="img-fluid rounded-circle"></div>
-                                    <div class="msg-body">
-                                        <h3 class="h5">Jason Doe</h3><span>Sent You Message</span>
-                                    </div></a></li>
-                                <li><a rel="nofollow" href="#" class="dropdown-item d-flex">
-                                    <div class="msg-profile"> <img src="img/avatar-2.jpg" alt="..." class="img-fluid rounded-circle"></div>
-                                    <div class="msg-body">
-                                        <h3 class="h5">Frank Williams</h3><span>Sent You Message</span>
-                                    </div></a></li>
-                                <li><a rel="nofollow" href="#" class="dropdown-item d-flex">
-                                    <div class="msg-profile"> <img src="img/avatar-3.jpg" alt="..." class="img-fluid rounded-circle"></div>
-                                    <div class="msg-body">
-                                        <h3 class="h5">Ashley Wood</h3><span>Sent You Message</span>
-                                    </div></a></li>
-                                <li><a rel="nofollow" href="#" class="dropdown-item all-notifications text-center"> <strong>Read all messages   </strong></a></li>
-                            </ul>
+
                         </li>
                         <!-- Languages dropdown    -->
                         <li class="nav-item dropdown"><a id="languages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link language dropdown-toggle"><img src="img/flags/16/CN.png" alt="Chinese"><span class="d-none d-sm-inline-block">Chinese</span></a>
-                            <ul aria-labelledby="languages" class="dropdown-menu">
-                                <li><a rel="nofollow" href="#" class="dropdown-item"> <img src="img/flags/16/DE.png" alt="English" class="mr-2">English</a></li>
-                                <li><a rel="nofollow" href="#" class="dropdown-item"> <img src="img/flags/16/FR.png" alt="English" class="mr-2">French                                         </a></li>
-                            </ul>
+
                         </li>
                         <!-- Logout    -->
                         <li class="nav-item"><a href="javascript:void(0)" class="nav-link logout"> <span class="d-none d-sm-inline">Logout</span><i class="fa fa-sign-out"></i></a></li>
@@ -89,8 +62,8 @@
             </div>
             <div id="menuDiv">
                 <ul  class="list-unstyled">
-                    <li ><a href="main.action"  target="mainFrame"> <i class="icon-home"></i> 后台首页 </a></li>
-                    <li><a href="score!updaloadPage.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩上传 </a></li>
+                    <li ><a href="bill!list.action"  target="mainFrame"> <i class="icon-home"></i> 后台首页 </a></li>
+                    <%--<li><a href="score!updaloadPage.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩上传 </a></li>
                     <li><a href="score!scoreList.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩查询 </a></li>
                     <li><a href="score!analysisIndex.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩分析 </a></li>
                     <li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-interface-windows"></i> 数据维护 </a>
@@ -101,13 +74,14 @@
                             <li><a href="student!studentList.action" target="mainFrame">学生维护</a></li>
                             <li><a href="examBatch!examBatchList.action" target="mainFrame">考试批次维护</a></li>
                             <li><a href="model!modelList.action" target="mainFrame">等级线维护</a></li>
+                            <li><a href="bill!list.action" target="mainFrame">金额统计</a></li>
                         </ul>
-                    </li>
+                    </li>--%>
                 </ul>
             </div>
         </nav>
-        <div class="content-inner" align="center">
-            <iframe frameborder="0" src="main.action" name="mainFrame" width="100%" height="100%"></iframe>
+        <div class="content-inner" style="padding-bottom: 0px;" align="center">
+            <iframe frameborder="0" src="bill!list.action" name="mainFrame" width="100%" height="100%"></iframe>
         </div>
     </div>
 </div>

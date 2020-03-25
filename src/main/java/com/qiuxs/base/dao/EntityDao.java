@@ -1,6 +1,7 @@
 package com.qiuxs.base.dao;
 
 import com.qiuxs.base.entity.Entity;
+import com.qiuxs.base.page.PageLimit;
 import org.apache.poi.ss.formula.functions.T;
 
 import java.io.Serializable;
@@ -71,6 +72,12 @@ public interface EntityDao {
      */
     <T extends Entity<?>> List<T> get(Class<T> clazz, String keyName, Collection<?> values);
 
+
+    <T extends Entity<?>> List<T> pageList(String hql, Map<String, Object> map, PageLimit pageLimit);
+
+
+    <T extends Entity<?>> List<T> pageList(Class<T> clazz, PageLimit pageLimit);
+
     /**
      * 根据属性列举实体
      *
@@ -96,7 +103,7 @@ public interface EntityDao {
      *
      * @param entities
      */
-    void saveOrUpdate(Collection<Entity<?>> entities);
+    <T extends Entity<?>> void saveOrUpdate(Collection<T> entities);
 
 
     /**
@@ -111,7 +118,7 @@ public interface EntityDao {
      *
      * @param entities
      */
-    void remove(Collection<Entity<?>> entities);
+    <T extends Entity<?>> void remove(Collection<T> entities);
 
     <T extends Entity<?>> boolean exist(Class<T> entityClass, String attr, Object value);
 

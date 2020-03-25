@@ -5,11 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.qiuxs.base.entity.Entity;
+import com.qiuxs.base.page.PageLimit;
 import com.qiuxs.base.service.BaseService;
 import com.qiuxs.base.util.Strings;
-import com.qiuxs.exam.entity.ExamBatch;
 import org.apache.commons.collections4.map.HashedMap;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -19,6 +18,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import static java.lang.System.out;
+import static org.apache.struts2.ServletActionContext.getRequest;
 import static org.apache.struts2.ServletActionContext.getResponse;
 
 @Controller
@@ -27,6 +27,8 @@ public class BaseAction extends ActionSupport{
 
 	@Resource(name = "baseServiceImpl")
 	protected BaseService baseService;
+
+	private PageLimit pageLimit;
 
 	private static final long serialVersionUID = -7771051448180391606L;
 
@@ -112,28 +114,33 @@ public class BaseAction extends ActionSupport{
 	protected void write(String msg){
 		getResponse().setContentType("text/html;charset=utf-8");
 		//获取输出流，然后使用
+		PrintWriter out = null;
 		try {
-			PrintWriter out = getResponse().getWriter();
-			out.print(msg);
-			out.flush();
+			out = getResponse().getWriter();
+			getResponse().getWriter().print(msg);
+			getResponse().getWriter().flush();
 		} catch (Exception e) {
 		}finally{
-			out.close();
+			if (out!=null){
+				out.close();
+			}
 		}
 
 	}
 	protected void write(Object o){
 		getResponse().setContentType("text/html;charset=utf-8");
-		//获取输出流，然后使用  
+		//获取输出流，然后使用
+		PrintWriter out = null;
 		try {
-			PrintWriter out = getResponse().getWriter();
+			out = getResponse().getWriter();
 			out.print(getJson(o));
 			out.flush();
 		} catch (Exception e) {
 		}finally{
-			out.close();
+			if (out!=null){
+				out.close();
+			}
 		}
-
 	}
 	public void writeSuccese(String msg){
 		Map<String, String> map = new HashedMap<String, String>();
@@ -172,4 +179,15 @@ public class BaseAction extends ActionSupport{
 		//	//：内部类(Inner Class)和嵌套类(Nested Class)的区别
 	}
 
+	public PageLimit getPageLimit() {
+		if (pageLimit == null) {
+			pageLimit = new PageLimit();
+			pageLimit.init(getRequest());
+		}
+		return pageLimit;
+	}
+
+	public void setPageLimit(PageLimit pageLimit) {
+		this.pageLimit = pageLimit;
+	}
 }

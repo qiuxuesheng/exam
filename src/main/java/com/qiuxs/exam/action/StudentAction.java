@@ -29,7 +29,7 @@ public class StudentAction extends BaseAction {
 
     public String studentList(){
 
-        List<Student> students = baseService.getAll(Student.class);
+        List<Student> students = baseService.pageList(Student.class,getPageLimit());
         put("students",students);
         return "studentList";
     }

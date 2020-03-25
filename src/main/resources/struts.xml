@@ -40,6 +40,10 @@
 			<result name="modelList">page/data/modelList.jsp</result>
 			<result name="modelForm">page/data/modelForm.jsp</result>
 		</action>
+		<action name="bill!*" class="com.qiuxs.huanhuan.BillAction" method="{1}">
+			<result name="list">page/bill/list.jsp</result>
+			<result name="info">page/bill/info.jsp</result>
+		</action>
 
 
 		<action name="score!*" class="scoreAction" method="{1}">

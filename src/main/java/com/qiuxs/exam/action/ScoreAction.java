@@ -59,9 +59,10 @@ public class ScoreAction extends BaseAction {
 		//获取扩展名
 		String ext = fileFileName.substring(fileFileName.lastIndexOf(".")+1);
 
-		Integer examId = getInt("examId");
+		Integer examBatchId = getInt("examBatchId");
 		Integer gradeId = getInt("gradeId");
-
+		put("examBatchId",examBatchId);
+		put("gradeId",gradeId);
 		List<String> courseNames = Arrays.asList(Strings.split(getString("course"),","));
 
 		if(!"xls".equals(ext)&&!"xlsx".equals(ext)){//使用xls方式读取
@@ -79,7 +80,7 @@ public class ScoreAction extends BaseAction {
 		try {
 
 			List<List<String >> datas  = MyReadExcel.readExcel(file, fileFileName) ;
-			int count = scoreService.uploadScore(datas, examId ,gradeId,courseNames);
+			int count = scoreService.uploadScore(datas, examBatchId ,gradeId,courseNames);
 			put("state", "导入成功");
 			put("msg", "导入成绩条数："+count);
 		} catch (Exception e) {
@@ -99,12 +100,12 @@ public class ScoreAction extends BaseAction {
 		List<WordModel> models = baseService.getAll(WordModel.class);
 		List<List<Object>> rows = new ArrayList<List<Object>>();
 		Integer courseId = getInt("courseId");
-		Integer examId = getInt("examId");
+		Integer examBatchId = getInt("examBatchId");
 		Integer gradeId = getInt("gradeId");
 		Integer modelId = getInt("modelId");
 
 		if(courseId!=null){
-			ExamBatch examBatch = baseService.get(ExamBatch.class,examId);
+			ExamBatch examBatch = baseService.get(ExamBatch.class,examBatchId);
             Course course = baseService.get(Course.class,courseId);
             Grade grade = baseService.get(Grade.class,gradeId);
             WordModel selectedModel = baseService.get(WordModel.class,modelId);
@@ -113,7 +114,7 @@ public class ScoreAction extends BaseAction {
 			put("courseName", course.getName());
 			put("selectedModel",selectedModel);
 			put("courseId",courseId);
-			put("examId",examId);
+			put("examBatchId",examBatchId);
 			put("gradeId",gradeId);
 			put("modelId",modelId);
 
@@ -130,14 +131,14 @@ public class ScoreAction extends BaseAction {
 
 
 	public void exportWord(){
-		Integer examId = getInt("examId");
+		Integer examBatchId = getInt("examBatchId");
 		Integer courseId = getInt("courseId");
 		Integer gradeId = getInt("gradeId");
 		Integer modelId = getInt("modelId");
-		if(examId==null||courseId==null||gradeId==null||modelId==null){
+		if(examBatchId==null||courseId==null||gradeId==null||modelId==null){
 			return ;
 		}
-		ExamBatch examBatch = baseService.get(ExamBatch.class,examId);
+		ExamBatch examBatch = baseService.get(ExamBatch.class,examBatchId);
 		Course course = baseService.get(Course.class,courseId);
         Grade grade = baseService.get(Grade.class,gradeId);
         WordModel model = baseService.get(WordModel.class,modelId);
@@ -333,9 +334,37 @@ public class ScoreAction extends BaseAction {
 
 	public String scoreList(){
 
-		scores = scoreService.findPageList();
-		courses = baseService.getAll(Course.class);
+		String hql = "from "+ExamScore.class.getName() +" where 1=1";
+		Map<String,Object> params = new HashMap<String, Object>();
+		if (getInt("examBatchId")!=null){
+			hql += " and examBatch.id = :examBatchId";
+			params.put("examBatchId",getInt("examBatchId"));
+			put("examBatchId",getInt("examBatchId"));
+		}
+		if (getInt("gradeId")!=null){
+			hql += " and student.adminclass.grade.id = :gradeId";
+			params.put("gradeId",getInt("gradeId"));
+			put("gradeId",getInt("gradeId"));
+		}
+		if (getInt("adminclassId")!=null){
+			hql += " and student.adminclass.id = :adminclassId";
+			params.put("adminclassId",getInt("adminclassId"));
+			put("adminclassId",getInt("adminclassId"));
+		}
+		if (Strings.isNotEmpty(getString("stdName"))){
+			hql += " and student.name like :stdName";
+			params.put("stdName","%"+getString("stdName")+"%");
+			put("stdName",getString("stdName"));
+		}
 
+		scores = baseService.pageList(hql,params,getPageLimit());
+
+		List<ExamBatch> examBatches = baseService.getAll(ExamBatch.class);
+		List<Grade> grades = baseService.getAll(Grade.class);
+		List<Course> courses = baseService.getAll(Course.class);
+		put("examBatches",examBatches);
+		put("grades",grades);
+		put("courses",courses);
 		return "scoreList";
 	}
 

@@ -2,6 +2,7 @@ package com.qiuxs.base.service.impl;
 
 import com.qiuxs.base.dao.EntityDao;
 import com.qiuxs.base.entity.Entity;
+import com.qiuxs.base.page.PageLimit;
 import com.qiuxs.base.service.BaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,14 @@ public class BaseServiceImpl implements BaseService {
 
     public <T extends Entity<?>> List<T> getAll(Class<T> clazz, String orderBy) {
         return entityDao.getAll(clazz,orderBy);
+    }
+
+    public <T extends Entity<?>> List<T> pageList(String hql, Map<String, Object> map, PageLimit pageLimit) {
+        return entityDao.pageList(hql,map,pageLimit);
+    }
+
+    public <T extends Entity<?>> List<T> pageList(Class<T> clazz, PageLimit pageLimit) {
+        return entityDao.pageList(clazz,pageLimit);
     }
 
     public void remove(Entity<?> object) {

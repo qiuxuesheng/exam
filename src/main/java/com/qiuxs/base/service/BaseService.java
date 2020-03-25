@@ -1,6 +1,8 @@
 package com.qiuxs.base.service;
 
 import com.qiuxs.base.entity.Entity;
+import com.qiuxs.base.page.PageLimit;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +12,12 @@ public interface BaseService {
 
     <T extends Entity<?>> List<T> getAll(Class<T> clazz);
 
-
     <T extends Entity<?>> List<T> getAll(Class<T> clazz, String orderBy);
+
+    <T extends Entity<?>> List<T> pageList(String hql, Map<String, Object> map, PageLimit pageLimit);
+
+    <T extends Entity<?>> List<T> pageList(Class<T> clazz, PageLimit pageLimit);
+
 
     void remove(Entity<?> object);
 

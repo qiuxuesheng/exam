@@ -24,10 +24,10 @@
 					<form id="exportWordForm" class="form-inline" role="form" action="score!analysisIndex.action">
 						<div class="form-group">
 							<label for="examBatch">选择考次</label>
-							<select class="form-control" id="examBatch" name="examId" required>
+							<select class="form-control" id="examBatch" name="examBatchId" required>
 								<option value="">...</option>
 								<s:iterator value="examBatchs">
-									<option value="${id}" <s:if test="#examId==id">selected="selected"</s:if>>${name }</option>
+									<option value="${id}" <s:if test="#examBatchId==id">selected="selected"</s:if>>${name }</option>
 								</s:iterator>
 							</select>
 						</div>

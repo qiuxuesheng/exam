@@ -10,7 +10,10 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Scope("prototype")
@@ -29,6 +32,25 @@ public class AdminclassAction extends BaseAction {
         List<Adminclass> adminclasses = baseService.getAll(Adminclass.class,"grade.code,code");
         put("adminclasses",adminclasses);
         return "adminclassList";
+    }
+
+    public void adminclassListJson(){
+        String hql = "from " + Adminclass.class.getName() + " where 1=1 ";
+        Map<String,Object> params = new HashMap<String, Object>();
+        if (getInt("gradeId")!=null){
+            hql += " and grade.id = :gradeId";
+            params.put("gradeId",getInt("gradeId"));
+        }
+        hql += " order by grade.code,code";
+        List<Adminclass> adminclasses = (List<Adminclass>) baseService.search(hql,params);
+        List<Map<String,Object>> maps = new ArrayList<Map<String, Object>>();
+        for (Adminclass adminclass1 : adminclasses) {
+            Map<String,Object> map = new HashMap<String, Object>();
+            map.put("id",adminclass1.getId());
+            map.put("name",adminclass1.getName());
+            maps.add(map);
+        }
+        write(maps);
     }
 
     public String adminclassEdit(){

@@ -20,6 +20,7 @@ package com.qiuxs.base.dao.impl;
 
 import com.qiuxs.base.dao.EntityDao;
 import com.qiuxs.base.entity.Entity;
+import com.qiuxs.base.page.PageLimit;
 import com.qiuxs.base.util.CollectUtils;
 import com.qiuxs.base.util.Strings;
 import org.hibernate.Query;
@@ -87,7 +88,6 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
             hql += " order by " + orderBy;
         }
         Query query = getSessionFactory().getCurrentSession().createQuery(hql);
-        query.setCacheable(true);
         return query.list();
     }
 
@@ -139,7 +139,7 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
     }
 
 
-    public void saveOrUpdate(Collection<Entity<?>> entities) {
+    public <T extends Entity<?>> void saveOrUpdate(Collection<T> entities) {
         if (null != entities && !entities.isEmpty()) {
             for (Entity<?> entity : entities) {
                 persistEntity(entity, null);
@@ -202,9 +202,9 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
         return executeUpdate(hql.toString(), newParams);
     }*/
 
-    public void remove(Collection<Entity<?>> entities) {
+    public <T extends Entity<?>> void remove(Collection<T> entities) {
         if (null == entities || entities.isEmpty()) return;
-        for (Object entity : entities)
+        for (Entity<?> entity : entities)
             if (null != entity) getSessionFactory().getCurrentSession().delete(entity);
     }
 
@@ -325,5 +325,85 @@ public class HibernateEntityDao extends HibernateDaoSupport implements EntityDao
         } else {
             return ((Number) rs.get(0)).longValue();
         }
+    }
+
+    public <T extends Entity<?>> List<T> pageList(String hql, Map<String, Object> map, PageLimit pageLimit) {
+        Session session = getCurrentSession();
+        //判断它是否分页
+        if(pageLimit != null && pageLimit.isPagination()) {
+            //如果分页
+            Query query = session.createQuery(getCountHql(hql));
+            //给这个countHql中的命名参数赋值
+            setParameters(query, map);
+            String total = query.uniqueResult().toString();
+            pageLimit.setTotal(total);
+            //开始查询数据
+            Query pageQuery = session.createQuery(hql);
+            //给命名参数赋值
+            setParameters(pageQuery, map);
+            //设置分页
+            pageQuery.setFirstResult(pageLimit.getStartIndex());
+            pageQuery.setMaxResults(pageLimit.getRows());
+            return pageQuery.list();
+        } else {
+
+            //不分页的时候
+            Query query = session.createQuery(hql);
+            //给参数赋值
+            setParameters(query, map);
+            return query.list();
+        }
+    }
+
+    public <T extends Entity<?>> List<T> pageList(Class<T> clazz, PageLimit pageLimit) {
+        String hql = "from " + clazz.getName();
+        return pageList(hql,null,pageLimit);
+    }
+
+
+
+    /**
+     * 拼接Hqlcount语句
+     */
+
+    private String getCountHql(String hql) {
+        int index = hql.toUpperCase().indexOf("FROM");
+        return "select count(*) "+ hql.substring(index);
+
+    }
+
+    /**
+     * 如果有带参数，
+     * 命名参数 ：赋值
+     *
+     * @param query
+     */
+    private void setParameters(Query query,Map<String, Object> map) {
+
+        if(map == null || map.size()==0) {
+            return ;
+        }
+        else {
+            //创建map的视图
+            Object values=null;
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+
+                values=entry.getValue();
+                //判断它的数据类型
+                if(values instanceof Collection) {
+                    query.setParameterList(entry.getKey(), (Collection) values);
+                }
+                else if(values instanceof Object[]) {
+                    query.setParameterList(entry.getKey(), (Object[]) values);
+                }
+                else {
+                    query.setParameter(entry.getKey(), values);
+
+                }
+
+            }
+
+        }
+
     }
 }

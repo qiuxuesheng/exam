@@ -85,13 +85,7 @@ public class ScoreService extends BaseServiceImpl {
 			throw new RuntimeException("第一列没有找到[姓名]字段");
 		}
 
-
-		//删除该考次下的得分记录
-		List<ExamScore> examScores = (List<ExamScore>) entityDao.search("from ExamScore where examBatch.id = ?",new Object[]{examBatchId});
-		for (ExamScore examScore : examScores) {
-			entityDao.remove(examScore);
-		}
-
+		Collection<ExamScore> saveList = new ArrayList<ExamScore>();
 
 		for (int rowIndex = 1; rowIndex < datas.size(); rowIndex++) {
 
@@ -101,15 +95,15 @@ public class ScoreService extends BaseServiceImpl {
 			String stuName = row.get(nameIndex);
 
 			//看班级是否存在，不存在则新建
-			List<?> adminclasses = entityDao.search("from Adminclass where name=?", new Object[]{adminclassName});
+			List<?> adminclasses = entityDao.search("from Adminclass where name=? and grade.id = ?", new Object[]{adminclassName,gradeId});
 			if (adminclasses.size()==0) {
-				throw new RuntimeException("第"+(rowIndex+1)+"行出错，班级不存在:"+adminclassName);
+				throw new RuntimeException("第"+(rowIndex+1)+"行出错，年级["+grade.getName()+"]:班级不存在-->  "+adminclassName);
 			}
 
 			//查询学生,不存在则新建学生
-			List<?> students = entityDao.search("from Student where name = ? and adminclass.name =? ",new Object[]{stuName,adminclassName});
+			List<?> students = entityDao.search("from Student where name = ? and adminclass.name =? and adminclass.grade.id =?",new Object[]{stuName,adminclassName,gradeId});
 			if (students.size()==0) {
-				throw new RuntimeException("第"+(rowIndex+1)+"行出错，学生不存在:"+stuName);
+				throw new RuntimeException("第"+(rowIndex+1)+"行出错，年级["+grade.getName()+"]班级["+adminclassName+"]:学生不存在-->  "+stuName);
 			}
 
 
@@ -118,7 +112,6 @@ public class ScoreService extends BaseServiceImpl {
 			examScore.setStudent((Student) students.get(0));
 			examScore.setExamBatch(examBatch);
 			examScore.setTestNumber(testNumber);
-			entityDao.saveOrUpdate(examScore);
 
 			//分项成绩
 			for (String courseName : courseNames) {
@@ -130,11 +123,16 @@ public class ScoreService extends BaseServiceImpl {
 					scoreItem.setMiss(true);
 				}
 				scoreItem.setScore(convertToScore(score,rowIndex,courseName));
-				entityDao.saveOrUpdate(scoreItem);
+				examScore.getScoreItems().add(scoreItem);
 			}
+			saveList.add(examScore);
 			success ++;
 		}
 
+		//删除该考次下对应年级的得分记录
+		List<ExamScore> examScores = (List<ExamScore>) entityDao.search("from ExamScore where examBatch.id = ? and student.adminclass.grade.id = ?",new Object[]{examBatchId,gradeId});
+		entityDao.remove(examScores);
+		entityDao.saveOrUpdate(saveList);
 		return success;
 	}
 
@@ -153,13 +151,13 @@ public class ScoreService extends BaseServiceImpl {
 		return findPageList(null,null);
 	}
 
-	public List<ExamScore> findPageList(Integer examId,Integer gradeId) {
+	public List<ExamScore> findPageList(Integer examBatchId,Integer gradeId) {
 
 		StringBuffer hql = new StringBuffer("from ExamScore where 1=1");
 		List<Object> params = new ArrayList<Object>();
-		if (examId != null) {
+		if (examBatchId != null) {
 			hql.append("and examBatch.id=?");
-			params.add(examId);
+			params.add(examBatchId);
 		}
 		if (gradeId !=null) {
 			hql.append("and student.adminclass.grade.id=?");

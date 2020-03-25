@@ -25,9 +25,9 @@
 							<label for="examBatch" class="col-sm-2 col-form-label">考试批次</label>
 							<div class="col-sm-10">
 
-								<select name="examId" class="form-control" id="examBatch" required>
+								<select name="examBatchId" class="form-control" id="examBatch" required>
 									<s:iterator value="examBatchs" var="examBatch">
-										<option value="${examBatch.id }" <s:if test="examId==id">selected="selected"</s:if> >${examBatch.name }</option>
+										<option value="${examBatch.id }" <s:if test="examBatchId==id">selected="selected"</s:if> >${examBatch.name }</option>
 									</s:iterator>
 								</select>
 
@@ -40,7 +40,7 @@
 								<select name="gradeId" class="form-control" id="grade" required>
 									<option value="">...</option>
 									<s:iterator value="grades" var="grade" status="st">
-										<option <s:if test="%{gradeId == #grade.id}">selected="selected"</s:if> value="${grade.id}">${grade.name}</option>
+										<option <s:if test="%{#gradeId == #grade.id}">selected="selected"</s:if> value="${grade.id}">${grade.name}</option>
 									</s:iterator>
 
 								</select>
