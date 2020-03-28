@@ -62,8 +62,8 @@
             </div>
             <div id="menuDiv">
                 <ul  class="list-unstyled">
-                    <li ><a href="bill!list.action"  target="mainFrame"> <i class="icon-home"></i> 后台首页 </a></li>
-                    <%--<li><a href="score!updaloadPage.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩上传 </a></li>
+                    <li ><a href="main.action"  target="mainFrame"> <i class="icon-home"></i> 后台首页 </a></li>
+                    <li><a href="score!updaloadPage.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩上传 </a></li>
                     <li><a href="score!scoreList.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩查询 </a></li>
                     <li><a href="score!analysisIndex.action"  target="mainFrame"> <i class="icon-grid"></i> 成绩分析 </a></li>
                     <li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-interface-windows"></i> 数据维护 </a>
@@ -76,12 +76,12 @@
                             <li><a href="model!modelList.action" target="mainFrame">等级线维护</a></li>
                             <li><a href="bill!list.action" target="mainFrame">金额统计</a></li>
                         </ul>
-                    </li>--%>
+                    </li>
                 </ul>
             </div>
         </nav>
         <div class="content-inner" style="padding-bottom: 0px;" align="center">
-            <iframe frameborder="0" src="bill!list.action" name="mainFrame" width="100%" height="100%"></iframe>
+            <iframe frameborder="0" src="main.action" name="mainFrame" width="100%" height="100%"></iframe>
         </div>
     </div>
 </div>
