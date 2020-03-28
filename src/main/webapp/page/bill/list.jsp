@@ -124,7 +124,7 @@
             '   <input type="hidden" name="index" value="'+index+'"/>' +
             '</td>' +
             '<td>' +
-            '   <input type="text" onkeyup="value=value.replace(/[^\\d.]/g,\'\')" name="money_'+index+'" value="" class="form-control" required/>' +
+            '   <input type="text" onkeyup="verifyNumber(this)" name="money_'+index+'" value="" class="form-control" required/>' +
             '</td>' +
             '<td>' +
             '   <select name="payType_'+index+'" class="form-control" required>' +
@@ -152,6 +152,7 @@
             '       <option value="1">顾</option>' +
             '       <option value="2">马</option>' +
             '       <option value="3">汪</option>' +
+            '       <option value="4">零售</option>' +
             '   </select>' +
             '</td>' +
             '<td>' +
@@ -182,6 +183,14 @@
         }
         form.submit();
 
+    }
+
+    function verifyNumber(input) {
+        var reg = new RegExp("^(-?\\d+)(\\.\\d+)?$");
+        if (!reg.test($(input).val())) {
+            $(input).val("")
+            alert("请输入正确的数字.")
+        }
     }
 
 </script>

@@ -22,7 +22,7 @@
                     <!-- Navbar Header-->
                     <div class="navbar-header">
                         <!-- Navbar Brand --><a href="index.action" class="navbar-brand d-none d-sm-inline-block">
-                        <div class="brand-text d-none d-lg-inline-block"><span></span><strong>成绩分析系统</strong></div>
+                        <div class="brand-text d-none d-lg-inline-block"><span></span><strong>账单统计</strong></div>
                         <div class="brand-text d-none d-sm-inline-block d-lg-none"><strong>BD</strong></div></a>
                         <!-- Toggle Button--><a id="toggle-btn" href="#" class="menu-btn active"><span></span><span></span><span></span></a>
                     </div>
@@ -57,7 +57,7 @@
                 <div class="avatar" style="width: 70px;height: 70px"><img src="img/avatar-1.jpg" alt="..." class="img-fluid rounded-circle"></div>
                 <div class="title">
                     <h1 class="h4">Qiuxs</h1>
-                    <p>123</p>
+                    <p>yhh</p>
                 </div>
             </div>
             <div id="menuDiv">

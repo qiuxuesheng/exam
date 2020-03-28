@@ -37,7 +37,7 @@ public class BillAction extends BaseAction {
         }
 
         //获取表1 key:docType-drugType
-        int docSize = 4;
+        int docSize = 5;
         int drugSize = 6;
         Map<String,Double> map = new HashMap<String, Double>();
         for (int i = 0; i < docSize; i++) {
@@ -101,7 +101,7 @@ public class BillAction extends BaseAction {
         }
         ExcelUtil.createRow(sheet, rowIndex++, cellSize, params, ExcelUtil.getCellStyle(hssfWorkbook));
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < docSize; i++) {
             params = new HashMap<Integer, String>();
             params.put(1,getDocTypeStr(i));
             for (int j = 0; j < 6; j++) {
@@ -162,8 +162,8 @@ public class BillAction extends BaseAction {
 
         //合并单元格
         ExcelUtil.mergedRows(sheet,0, 0, 0, cellSize-1);
-        ExcelUtil.mergedRows(sheet,6, 7, 0, cellSize-1);
-        ExcelUtil.mergedRows(sheet,9+bills.size(), 10+bills.size(), 0, titles2.size()-1);
+        ExcelUtil.mergedRows(sheet,docSize+2, docSize+3, 0, cellSize-1);
+        ExcelUtil.mergedRows(sheet,docSize+5+bills.size(), docSize+6+bills.size(), 0, titles2.size()-1);
 
         ExcelUtil.exportExcel(hssfWorkbook, titleValue);
 
@@ -212,6 +212,9 @@ public class BillAction extends BaseAction {
                 break;
             case 3 :
                 result = "汪";
+                break;
+            case 4 :
+                result = "零售";
                 break;
             default:
                 break;
