@@ -74,7 +74,7 @@
                             <li><a href="student!studentList.action" target="mainFrame">学生维护</a></li>
                             <li><a href="examBatch!examBatchList.action" target="mainFrame">考试批次维护</a></li>
                             <li><a href="model!modelList.action" target="mainFrame">等级线维护</a></li>
-                            <li><a href="bill!list.action" target="mainFrame">金额统计</a></li>
+                            <li><a href="bill!list.action" target="mainFrame">金额统计1</a></li>
                         </ul>
                     </li>--%>
                 </ul>
