@@ -60,7 +60,7 @@
     <tr>
         <td>姓名</td>
         <td>年龄</td>
-        <td>成绩</td>
+        <td>成绩1</td>
         <td>操作</td>
     </tr>
     </thead>
