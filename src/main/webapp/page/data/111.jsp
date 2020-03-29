@@ -60,7 +60,7 @@
     <tr>
         <td>姓名</td>
         <td>年龄</td>
-        <td>成绩1</td>
+        <td>成绩</td>
         <td>操作</td>
     </tr>
     </thead>
@@ -128,7 +128,7 @@
     })
     //				增加
     $(".btn-add").click(function() {
-        var str = '<tr><td><span style="display: none;"></span><input type="text" class="re_name" style="display: block;"/></td><td><span style="display: none";></span><input type="text" class="re_age" style="display:block"/></td><td><span style="display:none"></span><input type="text" class="re_score" style="display:block"/></td><td><button class="btn btn-red change" style="display:none">修改</button> <button class="btn que_change" style="display:inline-block">确定1</button> <button class="btn del_change">删除</button></td></tr>'
+        var str = '<tr><td><span style="display: none;"></span><input type="text" class="re_name" style="display: block;"/></td><td><span style="display: none";></span><input type="text" class="re_age" style="display:block"/></td><td><span style="display:none"></span><input type="text" class="re_score" style="display:block"/></td><td><button class="btn btn-red change" style="display:none">修改</button> <button class="btn que_change" style="display:inline-block">确定</button> <button class="btn del_change">删除</button></td></tr>'
         $("tbody").append(str)
         $(this).parents("tr").prev().find(".que_change").text("确定")
         $(this).parents("tr").prev().find(".re_name").show().siblings().hide()
